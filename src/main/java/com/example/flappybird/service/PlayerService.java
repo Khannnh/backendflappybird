@@ -14,11 +14,12 @@ public class PlayerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    
     public Player registerPlayer(String ten, String username, String pw) {
         Player player = new Player();
         player.setTen(ten);
         player.setUsername(username);
-        player.setPw(passwordEncoder.encode(pw));
+        player.setPw(pw);
         return playerRepository.save(player);
     }
 
