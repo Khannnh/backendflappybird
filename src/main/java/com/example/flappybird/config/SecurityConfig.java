@@ -21,11 +21,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/BaiTapLon/**").permitAll() // Cho phép truy cập các file trong thư mục BaiTapLon
+                .requestMatchers("/BaiTapLon/**").permitAll()  // Cho phép truy cập các file trong thư mục BaiTapLon
                 .anyRequest().authenticated()
             )
-            .csrf(csrf -> csrf.disable()) // Tắt CSRF nếu không cần thiết
-            .formLogin(login -> login.disable()); // Sử dụng API mới để tắt form login
+            .csrf(csrf -> csrf.disable())  // Tắt CSRF nếu không cần thiết
+            .formLogin(login -> login.disable());  // Tắt form login mặc định của Spring Security
 
         return http.build();
     }
