@@ -7,10 +7,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -20,15 +22,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/BaiTapLon/**").permitAll()  // Cho phép truy cập các file trong thư mục BaiTapLon
-                .requestMatchers("/api/**").permitAll()  // Cho phép truy cập đến các endpoint bắt đầu bằng /api/
-                .requestMatchers("/api/login , \"/login.html\"").permitAll()
-                .anyRequest().authenticated()  // Các yêu cầu khác cần xác thực
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/BaiTapLon/**", "/api/**", "/api/login", "/login.html").permitAll()  // Cho phép truy cập không cần xác thực
+                .anyRequest().authenticated()  // Các yêu cầu còn lại cần xác thực
             )
-            .csrf(csrf -> csrf.disable())  // Tắt CSRF nếu không cần thiết
-            .formLogin(login -> login.disable());  // Tắt form login mặc định của Spring Security
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**") // Bỏ qua CSRF cho những endpoint API cụ thể
+            )
+            .formLogin(form -> form
+                .loginPage("/login.html")  // Xác định trang đăng nhập của bạn
+                .loginProcessingUrl("/api/login")  // URL xử lý form login
+                .permitAll()  // Cho phép tất cả truy cập vào trang đăng nhập
+            );
 
         return http.build();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")  // Cấu hình CORS cho các endpoint bắt đầu bằng /api/
+                .allowedOrigins("http://localhost:8080")  // Địa chỉ frontend của bạn
+                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Các phương thức HTTP cho phép
+                .allowCredentials(true);  // Cho phép gửi cookies nếu cần thiết
     }
 }
