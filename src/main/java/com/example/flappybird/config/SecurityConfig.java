@@ -18,11 +18,14 @@ public class SecurityConfig {
     }
 
     @Bean
+ 
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/BaiTapLon/**").permitAll()  // Cho phép truy cập các file trong thư mục BaiTapLon
-                .anyRequest().authenticated()
+                .requestMatchers("/api/**").permitAll()  // Cho phép truy cập đến các endpoint bắt đầu bằng /api/
+                .requestMatchers("/api/login").permitAll()
+                .anyRequest().authenticated()  // Các yêu cầu khác cần xác thực
             )
             .csrf(csrf -> csrf.disable())  // Tắt CSRF nếu không cần thiết
             .formLogin(login -> login.disable());  // Tắt form login mặc định của Spring Security

@@ -23,17 +23,26 @@ public class LoginController {
 
     @PostMapping("/login")  // Endpoint xử lý đăng nhập
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest) {
-        Player player = playerService.findByUsername(loginRequest.getUsername());
         Map<String, Object> response = new HashMap<>();
 
+        // Tìm người chơi theo tên đăng nhập
+        Player player = playerService.findByUsername(loginRequest.getUsername());
+
+        // Kiểm tra xem người chơi có tồn tại và mật khẩu có khớp không
+        if (player == null) {
+            response.put("success", false);
+            response.put("message", "Tên tài khoản không tồn tại!");
+            return ResponseEntity.badRequest().body(response);
+        }
+
         // So sánh mật khẩu đã mã hóa với mật khẩu người dùng nhập vào
-        if (player != null && passwordEncoder.matches(loginRequest.getPassword(), player.getPw())) {
+        if (passwordEncoder.matches(loginRequest.getPassword(), player.getPw())) {
             response.put("success", true);
             response.put("message", "Đăng nhập thành công!");
             return ResponseEntity.ok(response);
         } else {
             response.put("success", false);
-            response.put("message", "Tên tài khoản hoặc mật khẩu không chính xác!");
+            response.put("message", "Mật khẩu không chính xác!");
             return ResponseEntity.badRequest().body(response);
         }
     }
