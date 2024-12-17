@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: 'Press Start 2P', cursive;
-			background-image: url('ảnh chân dung.jpg');
+            background-image: url('flappybirdbg.png');
             background-position: center;
             background-repeat: no-repeat;
             background-color: #f0f0f0;
@@ -80,8 +80,7 @@
 <body>
     <!-- Header -->
     <h1>FlappyBird</h1>
-	<img src="/flappybird.png" alt="Flappy Bird" id="flappybird-image">
-
+    <img src="flappybird.png" alt="Flappy Bird" id="flappybird-image">
 
     <!-- Login Container -->
     <div id="login-container">
@@ -106,22 +105,46 @@
                 return;
             }
 
-            // Gửi request đến API (không có context-path /BaiTapLon nữa)
-            fetch('/api/login', {  // Đường dẫn không còn chứa /BaiTapLon
+            // Gửi request đến API
+            fetch('/api/login', {  // Đường dẫn API
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Login failed!');
+                // Kiểm tra xem server có chuyển hướng không
+                if (response.redirected) {
+                    console.error('Server đã chuyển hướng, có thể thông tin đăng nhập sai.');
+                    alert('Thông tin đăng nhập không hợp lệ. Vui lòng thử lại.');
+                    return Promise.reject('Server redirect');
                 }
-                return response.json();
+
+                // Kiểm tra lỗi phản hồi từ server
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert("Thông tin đăng nhập không hợp lệ");
+                    } else if(response.status === 500){
+                        alert("Lỗi server nội bộ");
+                    } else {
+                        alert("Lỗi: " + response.statusText);
+                    }
+                    return Promise.reject("Server error");
+                }
+
+                // Kiểm tra xem response có phải JSON không
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    console.error('Server trả về phản hồi không phải JSON:', response);
+                    alert('Lỗi: Phản hồi từ server không hợp lệ.');
+                    return Promise.reject("Invalid server response");
+                }
             })
             .then(data => {
                 if (data.success) {
                     alert('Login successful!');
-                    window.location.href = '/home.html'; // Chuyển trang khi thành công (không còn /BaiTapLon)
+                    window.location.href = '/home.html'; // Chuyển trang khi thành công
                 } else {
                     alert(data.message || 'Invalid credentials. Please try again.');
                 }
