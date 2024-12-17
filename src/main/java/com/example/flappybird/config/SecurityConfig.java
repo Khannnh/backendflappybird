@@ -23,7 +23,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/BaiTapLon/**", "/api/**", "/api/login", "/login.html").permitAll()  // Cho phép truy cập không cần xác thực
+                .requestMatchers("/api/**", "/login.html", "/flappybird.png", "/flappybirdbg.png", "/favicon.ico").permitAll()  // Cho phép truy cập không cần xác thực
                 .anyRequest().authenticated()  // Các yêu cầu còn lại cần xác thực
             )
             .csrf(csrf -> csrf
@@ -32,6 +32,7 @@ public class SecurityConfig implements WebMvcConfigurer {
             .formLogin(form -> form
                 .loginPage("/login.html")  // Xác định trang đăng nhập của bạn
                 .loginProcessingUrl("/api/login")  // URL xử lý form login
+                .defaultSuccessUrl("/home.html", true)  // Chuyển hướng sau khi đăng nhập thành công
                 .permitAll()  // Cho phép tất cả truy cập vào trang đăng nhập
             );
 

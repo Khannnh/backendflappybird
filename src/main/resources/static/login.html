@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
 
     <title>Login Flappy Bird</title>
     <style>
         body {
             font-family: 'Press Start 2P', cursive;
-            background-image: url('flappybirdbg.png');
+			background-image: url('ảnh chân dung.jpg');
             background-position: center;
             background-repeat: no-repeat;
             background-color: #f0f0f0;
@@ -81,7 +80,8 @@
 <body>
     <!-- Header -->
     <h1>FlappyBird</h1>
-    <img src="flappybird.png" alt="Flappy Bird" id="flappybird-image">
+	<img src="/flappybird.png" alt="Flappy Bird" id="flappybird-image">
+
 
     <!-- Login Container -->
     <div id="login-container">
@@ -106,8 +106,8 @@
                 return;
             }
 
-            // Gửi request đến API kèm context-path
-            fetch('/BaiTapLon/api/login', { 
+            // Gửi request đến API (không có context-path /BaiTapLon nữa)
+            fetch('/api/login', {  // Đường dẫn không còn chứa /BaiTapLon
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -121,7 +121,7 @@
             .then(data => {
                 if (data.success) {
                     alert('Login successful!');
-                    window.location.href = '/BaiTapLon/home.html'; // Chuyển trang khi thành công
+                    window.location.href = '/home.html'; // Chuyển trang khi thành công (không còn /BaiTapLon)
                 } else {
                     alert(data.message || 'Invalid credentials. Please try again.');
                 }
