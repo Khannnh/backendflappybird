@@ -24,19 +24,22 @@ public class SecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**", "/login.html", "/flappybird.png", "/flappybirdbg.png", "/favicon.ico").permitAll()  // Cho phép truy cập không cần xác thực
+                .requestMatchers("/api/**" , "/home.html","/login.html",
+                		"createaccount.html","gameover.html",
+                		"/flappybird.png", "/flappybirdbg.png", "/favicon.ico").permitAll()  // Cho phép truy cập không cần xác thực
                 .anyRequest().authenticated()  // Các yêu cầu còn lại cần xác thực
             )
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers("/api/**") // Bỏ qua CSRF cho những endpoint API cụ thể
             )
             .formLogin(form -> form
-                .loginPage("/login")  // Đặt trang login tùy chỉnh nếu cần
+                .loginPage("/login")  // Đặt trang login tùy chỉnh
+                .defaultSuccessUrl("/home.html", true)  // Chuyển hướng đến trang home.html sau khi đăng nhập thành công
                 .permitAll()  // Cho phép mọi người truy cập trang login
             )
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Disable session management if you want a stateless approach
-            ); // Vô hiệu hóa quản lý session để tránh redirect
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // Sử dụng session khi cần thiết
+            ); // Sử dụng session để chuyển hướng sau khi đăng nhập
 
         return http.build();
     }
