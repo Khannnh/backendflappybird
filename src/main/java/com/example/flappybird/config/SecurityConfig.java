@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,30 +14,26 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**" , "/home.html","/login.html",
-                		"createaccount.html","gameover.html",
-                		"/flappybird.png", "/flappybirdbg.png", "/favicon.ico").permitAll()  // Cho phép truy cập không cần xác thực
-                .anyRequest().authenticated()  // Các yêu cầu còn lại cần xác thực
+                .requestMatchers("/api/**", "/login.html", "/createaccount.html", 
+                                 "/flappybird.png", "/flappybirdbg.png", "/favicon.ico", "/gameover.jpg")
+                .permitAll()  // Cho phép truy cập không yêu cầu đăng nhập
+                .requestMatchers("/home.html").authenticated()  // Chỉ cho phép truy cập home.html sau khi đăng nhập hoặc tạo tài khoản
+                .anyRequest().authenticated()  // Các yêu cầu còn lại cần phải đăng nhập
             )
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers("/api/**") // Bỏ qua CSRF cho những endpoint API cụ thể
             )
             .formLogin(form -> form
-                .loginPage("/login")  // Đặt trang login tùy chỉnh
+                .loginPage("/login.html")  // Đặt trang login tùy chỉnh
                 .defaultSuccessUrl("/home.html", true)  // Chuyển hướng đến trang home.html sau khi đăng nhập thành công
                 .permitAll()  // Cho phép mọi người truy cập trang login
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // Sử dụng session khi cần thiết
-            ); // Sử dụng session để chuyển hướng sau khi đăng nhập
+            );
 
         return http.build();
     }
