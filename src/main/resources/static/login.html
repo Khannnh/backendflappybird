@@ -99,31 +99,21 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Kiểm tra trường trống
             if (!username || !password) {
                 alert('Please fill in both username and password!');
                 return;
             }
 
-            // Gửi request đến API
-            fetch('/api/login', {  // Đường dẫn API
+            fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             })
             .then(response => {
-                // Kiểm tra xem server có chuyển hướng không
-                if (response.redirected) {
-                    console.error('Server đã chuyển hướng, có thể thông tin đăng nhập sai.');
-                    alert('Thông tin đăng nhập không hợp lệ. Vui lòng thử lại.');
-                    return Promise.reject('Server redirect');
-                }
-
-                // Kiểm tra lỗi phản hồi từ server
                 if (!response.ok) {
                     if (response.status === 401) {
                         alert("Thông tin đăng nhập không hợp lệ");
-                    } else if(response.status === 500){
+                    } else if (response.status === 500) {
                         alert("Lỗi server nội bộ");
                     } else {
                         alert("Lỗi: " + response.statusText);
@@ -131,20 +121,12 @@
                     return Promise.reject("Server error");
                 }
 
-                // Kiểm tra xem response có phải JSON không
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    return response.json();
-                } else {
-                    console.error('Server trả về phản hồi không phải JSON:', response);
-                    alert('Lỗi: Phản hồi từ server không hợp lệ.');
-                    return Promise.reject("Invalid server response");
-                }
+                return response.json();
             })
             .then(data => {
                 if (data.success) {
                     alert('Login successful!');
-                    window.location.href = '/home.html'; // Chuyển trang khi thành công
+                    window.location.href = '/home.html';  // Redirect to the home page after success
                 } else {
                     alert(data.message || 'Invalid credentials. Please try again.');
                 }

@@ -5,7 +5,8 @@ import com.example.flappybird.model.Player;
 import com.example.flappybird.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,32 +19,37 @@ public class LoginController {
     @Autowired
     private PlayerService playerService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @PostMapping("/login")  // Endpoint xử lý đăng nhập
+    @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest) {
         Map<String, Object> response = new HashMap<>();
 
-        // Tìm người chơi theo tên đăng nhập
+        // Tìm kiếm người chơi trong cơ sở dữ liệu
         Player player = playerService.findByUsername(loginRequest.getUsername());
-
-        // Kiểm tra xem người chơi có tồn tại và mật khẩu có khớp không
-        if (player == null) {
+        if (player == null || !loginRequest.getPassword().equals(player.getPw())) {
             response.put("success", false);
-            response.put("message", "Tên tài khoản không tồn tại!");
-            return ResponseEntity.badRequest().body(response);
+            response.put("message", "Tên tài khoản hoặc mật khẩu không chính xác!");
+            return ResponseEntity.status(401).body(response);  // Trả về lỗi 401 nếu không tìm thấy hoặc mật khẩu không chính xác
         }
 
-        // So sánh mật khẩu đã mã hóa với mật khẩu người dùng nhập vào
-        if (passwordEncoder.matches(loginRequest.getPassword(), player.getPw())) {
-            response.put("success", true);
-            response.put("message", "Đăng nhập thành công!");
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("success", false);
-            response.put("message", "Mật khẩu không chính xác!");
-            return ResponseEntity.badRequest().body(response);
-        }
+        // Tạo đối tượng xác thực và lưu vào SecurityContext để Spring Security nhận diện
+        UsernamePasswordAuthenticationToken authentication = 
+            new UsernamePasswordAuthenticationToken(player.getUsername(), player.getPw());
+        SecurityContextHolder.getContext().setAuthentication(authentication);  // Lưu thông tin xác thực vào SecurityContext
+
+        response.put("success", true);
+        response.put("message", "Đăng nhập thành công!");
+        return ResponseEntity.ok(response);  // Trả về phản hồi thành công
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logout() {
+        Map<String, Object> response = new HashMap<>();
+
+        // Xóa thông tin xác thực trong SecurityContext khi người dùng đăng xuất
+        SecurityContextHolder.clearContext();
+
+        response.put("success", true);
+        response.put("message", "Đăng xuất thành công!");
+        return ResponseEntity.ok(response);  // Trả về phản hồi thành công
     }
 }
