@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Đường dẫn chính xác đến Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://code.iconify.design/3/3.0.0/iconify.min.js"></script> <!--link này để chèn bxh 1,2,3-->
+    <title>Game Over</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), url('gameover.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Press Start 2P', cursive; 
+            /*nếu không dùng đc press start 2p thì dùng cursive đè?*/
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: white;
+            color: #ffd633;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: -5px 5px 10px #000033; /* Bóng bên trái và dưới */
+            /*bóng rộng 10px ngay dưới nút*/
+        }
+        button:hover {
+            box-shadow: -5px 5px 15px #1a1aff; /* Đổ bóng cho viền */
+        }
+        h1 {
+            margin-top: 65px;
+            font-size: 60px;
+            color: #FFA500;
+            text-shadow:  /*đổ bóng cho chữ */
+            /* Viền đen ngoài */
+            6px 6px 0 white,
+            -6px 6px 0 white,
+            6px -6px 0 white,
+            -6px -6px 0 white,
+            0px 6px 0 white,
+            6px 0px 0 white,
+            -6px 0px 0 white,
+            0px -6px 0 white,
+            /* Viền trắng bên trong */
+            9px 9px 0 black,
+            -9px 9px 0 black,
+            9px -9px 0 black,
+            -9px -9px 0 black,
+            0px 9px 0 black,
+            9px 0px 0 black,
+            -9px 0px 0 black,
+            0px -9px 0 black;
+        }
+        #flappybird-image {
+            display: block;
+            margin: 10px auto;
+            width: 60px;
+            height: auto;
+        }
+        #newgame {
+            margin-top: 20px;
+            font-size: 25px;
+        }
+        #footer {
+            align-items: center;
+            margin-top: 80px;
+            display: flex; /*sắp xếp 2 ptu trên cùng 1 hàng*/
+            justify-content: center; /*căn giữa 2 phần tử*/
+            gap: 85px;
+        }
+        #menu {
+            color: white;
+            background-color: transparent; /* làm cho màu nền trong suốt*/
+            border: none; /* Nếu bạn muốn loại bỏ viền của nút */
+            box-shadow: none;
+            font-size: 32px;
+            margin-left: 0px;
+            font-family: Arial, sans-serif;
+            font-family: 'Press Start 2P', cursive;
+        }
+        #newbest {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        #summary {
+            margin: auto;
+        }
+        #table, th, td {
+            background-color: #d6d685;
+            border-radius: 15px;
+            color: #ff261a;
+            align-items: center;
+            margin: auto;
+            font-family: Arial, sans-serif;
+            font-family: 'Press Start 2P', cursive;
+            width: 25%; 
+            font-size: 20px;
+            font-weight: 900;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        }
+        #total_point, #score {
+            color: white;
+            font-size: 33px;
+        }
+        #total {
+            font-style: italic;
+            animation: blink 1s infinite; /* Chữ nhấp nháy */
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        #continue, #leaderboard {
+            border: solid black 2px;
+            font-size: 50px;
+            border-radius: 10%;
+        }
+        #firstline {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 120px;
+            background-color: transparent; /* làm cho màu nền trong suốt*/
+            border: none; /* Nếu bạn muốn loại bỏ viền của nút */
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            background-color: transparent; /* làm cho màu nền trong suốt */
+            border: none; /* loại bỏ viền */
+            cursor: pointer;
+			box-shadow: none;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block; /* xếp các ptu như khối dọc*/ 
+        }
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+		.dropbtn:hover {
+		    box-shadow: none;
+		}
+		
+    </style>
+</head>
+<body>
+    <div id="firstline">
+        <button id="menu">
+            <i class='fas fa-angle-left'></i>
+            <b>Menu</b>
+        </button>
+        <div class="dropdown">
+            <button class="dropbtn"><i class="fa fa-user-circle-o" style="font-size:38px;color:white "></i></button>
+            <div class="dropdown-content">
+                <a href="#info"><i class='fas fa-user-alt'></i>&nbsp;User information</a>
+                <a href="#logout" id ='logout'><i class='fas fa-sign-out-alt'>&nbsp;</i>Log out</a>
+            </div>
+        </div>
+    </div>
+    <h1>Game Over</h1>
+    <div id="summary">
+        <table id="table" style="border: solid black 3px;">
+            <tr>
+                <td>MEDAL</td>
+                <td>SCORE</td>
+            </tr>
+            <tr>
+                <td id="medal" rowspan="3"><i class='fas fa-medal' style='font-size:90px;color:#ffd926'></i></td>
+                <td id="score">103</td>
+            </tr>
+            <tr>
+                <td id="total">TOTAL</td>
+            </tr>
+            <tr>
+                <td id="total_point">110</td>
+            </tr>
+        </table>
+    </div>
+    <div id="footer">
+        <button id="continue">
+            <i class="fas fa-play" style="font-size:35px;color:#00e68a"></i>
+        </button>
+        <button id="leaderboard">
+            <span class="iconify" data-icon="mdi:podium-gold" style="font-size:35px; color:#ff6600;"></span>
+        </button>
+    </div>
+	
+	<script>
+	    document.getElementById("logout").addEventListener("click", function() {
+	        window.location.href = "login.html";
+	    });
+	</script>
+</body>
+</html>
