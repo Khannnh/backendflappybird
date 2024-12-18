@@ -1,0 +1,62 @@
+body {
+    font-family: 'Press Start 2P', cursive;
+    background-image: url('flappybirdbg.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #f0f0f0;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#game-container {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+#bird {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+}
+
+.pipe {
+    position: absolute;
+    width: 50px;
+}
+
+.toppipe {
+    top: 0;
+}
+
+.bottompipe {
+    bottom: 0;
+}
+
+#score-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#pauseButton, #resumeButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+}
