@@ -18,21 +18,28 @@ public class SecurityConfig implements WebMvcConfigurer {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/**", "/login.html", "/createaccount.html", 
-                                 "/flappybird.png", "/flappybirdbg.png", "/favicon.ico", "/gameover.jpg")
+                                 "/flappybird.png", "/flappybirdbg.png", "/gameover.jpg")
                 .permitAll()  // Cho phép truy cập không yêu cầu đăng nhập
-                .requestMatchers("/home.html").authenticated()  // Chỉ cho phép truy cập home.html sau khi đăng nhập hoặc tạo tài khoản
-                .anyRequest().authenticated()  // Các yêu cầu còn lại cần phải đăng nhập
+                .requestMatchers("/home.html").authenticated()  // home.html chỉ cho phép sau khi đăng nhập
+                .anyRequest().authenticated()  // Các yêu cầu khác cần đăng nhập
             )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**") // Bỏ qua CSRF cho những endpoint API cụ thể
+                .ignoringRequestMatchers("/api/**")  // Tắt CSRF cho API
             )
             .formLogin(form -> form
                 .loginPage("/login.html")  // Đặt trang login tùy chỉnh
-                .defaultSuccessUrl("/home.html", true)  // Chuyển hướng đến trang home.html sau khi đăng nhập thành công
-                .permitAll()  // Cho phép mọi người truy cập trang login
+                .defaultSuccessUrl("/home.html", true)  // Chuyển hướng đến home.html khi đăng nhập thành công
+                .failureUrl("/login.html?error=true")  // Xử lý lỗi login
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")  // Endpoint logout
+                .logoutSuccessUrl("/login.html")  // Chuyển hướng sau khi logout
+                .invalidateHttpSession(true)  // Xóa session
+                .deleteCookies("JSESSIONID")  // Xóa cookie phiên
             )
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // Sử dụng session khi cần thiết
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // Dùng session khi cần
             );
 
         return http.build();
@@ -40,10 +47,10 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")  // Cấu hình CORS cho các endpoint bắt đầu bằng /api/
-                .allowedOrigins("http://localhost:8080")  // Địa chỉ frontend của bạn
-                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Các phương thức HTTP cho phép
-                .allowedHeaders("*")  // Cho phép các header tùy chỉnh
-                .allowCredentials(true);  // Cho phép gửi cookies nếu cần thiết
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:8080")  // Địa chỉ frontend
+                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Các phương thức
+                .allowedHeaders("*")  // Cho phép các header
+                .allowCredentials(true);  // Hỗ trợ cookie và thông tin xác thực
     }
 }

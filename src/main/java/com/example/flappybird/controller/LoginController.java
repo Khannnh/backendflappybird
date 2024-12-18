@@ -5,8 +5,6 @@ import com.example.flappybird.model.Player;
 import com.example.flappybird.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -31,13 +29,10 @@ public class LoginController {
             return ResponseEntity.status(401).body(response);  // Trả về lỗi 401 nếu không tìm thấy hoặc mật khẩu không chính xác
         }
 
-        // Tạo đối tượng xác thực và lưu vào SecurityContext để Spring Security nhận diện
-        UsernamePasswordAuthenticationToken authentication = 
-            new UsernamePasswordAuthenticationToken(player.getUsername(), player.getPw());
-        SecurityContextHolder.getContext().setAuthentication(authentication);  // Lưu thông tin xác thực vào SecurityContext
-
+        // Xác thực thành công, trả về thông tin người dùng
         response.put("success", true);
         response.put("message", "Đăng nhập thành công!");
+        response.put("username", player.getUsername());
         return ResponseEntity.ok(response);  // Trả về phản hồi thành công
     }
 
@@ -45,9 +40,7 @@ public class LoginController {
     public ResponseEntity<Map<String, Object>> logout() {
         Map<String, Object> response = new HashMap<>();
 
-        // Xóa thông tin xác thực trong SecurityContext khi người dùng đăng xuất
-        SecurityContextHolder.clearContext();
-
+        // Đăng xuất và xóa thông tin xác thực trong SecurityContext
         response.put("success", true);
         response.put("message", "Đăng xuất thành công!");
         return ResponseEntity.ok(response);  // Trả về phản hồi thành công
