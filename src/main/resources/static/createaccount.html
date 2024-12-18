@@ -6,6 +6,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+	<link rel="icon" href="data:,">
     <title>Create Account</title>
     <style>
         body {
@@ -109,18 +110,19 @@
                 const response = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password, ten }),
+                    body: JSON.stringify({ username, pw: password, ten }),
                 });
 
                 if (response.ok) {
-                    const message = await response.text();
-                    alert(message);
-                    if (message === "Tạo tài khoản thành công!") {
+                    const result = await response.json();
+                    alert(result.message);
+
+                    if (result.message === "Tạo tài khoản thành công!") {
                         // Tự động đăng nhập sau khi tạo tài khoản
                         const loginResponse = await fetch('/api/login', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ username, password }),
+                            body: JSON.stringify({ username, pw: password }),
                         });
 
                         if (loginResponse.ok) {
