@@ -1,12 +1,13 @@
 body {
     font-family: 'Press Start 2P', cursive;
-    background-image: url('flappybirdbg.png');
-    background-position: center;
-    background-repeat: no-repeat;
     background-color: #f0f0f0;
+    text-align: center;
+    background-image: url('nen.png');
+    background-position: center center; /* Căn giữa hình nền */
+    background-repeat: no-repeat;
+    background-size: contain; /* Đảm bảo hình nền vừa với chiều cao và chiều rộng */
     height: 100vh;
     margin: 0;
-    text-align: center;
 }
 
 html, body {
@@ -17,8 +18,8 @@ html, body {
 
 #game-container {
     position: relative;
-    width: 400px;
-    height: 600px;
+    width: 66vh;
+    height: 100vh;
     margin: 0 auto;
     overflow: hidden;
 }
@@ -57,15 +58,6 @@ html, body {
     color: white;
 }
 
-#pauseButton, #resumeButton {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    font-size: 18px;
-    cursor: pointer;
-    font-family: 'Press Start 2P', cursive;
-}
 .score-container {
-	margin:auto;
+    margin: auto;
 }

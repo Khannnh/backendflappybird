@@ -20,10 +20,10 @@ function createPipe() {
     let bottompipe = document.createElement("img");
     bottompipe.src = "bottompipe.png";
     bottompipe.className = "pipe bottompipe";
-    bottompipe.style.height = (600 - pipeHeight - pipeGap) + "px";
+    bottompipe.style.height = (600 - pipeHeight - pipeGap) + "px"; // Đảm bảo chiều cao của bottompipe
     bottompipe.style.left = "400px";
     bottompipe.style.position = "absolute";
-    bottompipe.style.top = (pipeHeight + pipeGap) + "px";
+    bottompipe.style.bottom = "0px"; // Đặt bottompipe bắt đầu từ dưới cùng
     pipeContainer.appendChild(bottompipe);
 
     pipes.push({ top: toppipe, bottom: bottompipe });
@@ -150,16 +150,29 @@ function startGame() {
 
 function pauseGame() {
     isPaused = true;
-    document.getElementById("pauseButton").style.display = "none";
-    document.getElementById("resumeButton").style.display = "block";
+    console.log("Game paused"); // Debug, nếu cần
 }
 
 function resumeGame() {
     isPaused = false;
-    document.getElementById("pauseButton").style.display = "block";
-    document.getElementById("resumeButton").style.display = "none";
-    draw();
+    birdVelocityY = 0; // Đặt lại vận tốc chim để tránh rơi đột ngột
+    console.log("Game resumed"); // Debug, nếu cần
+    draw(); // Gọi lại `draw` để tiếp tục vòng lặp trò chơi
 }
+
+document.addEventListener("keydown", function (e) {
+    if (e.code === "Space" && !isGameOver && !isPaused) {
+        birdVelocityY = lift; // Chim bay lên khi nhấn Space
+    } else if (e.code === "Space" && isGameOver) {
+        restartGame(); // Khởi động lại khi trò chơi kết thúc
+    } else if (e.code === "KeyH" && !isGameOver) {
+        pauseGame(); // Dừng trò chơi khi nhấn H
+    } else if (e.code === "KeyD" && isPaused && !isGameOver) {
+        resumeGame(); // Tiếp tục trò chơi khi nhấn D
+    }
+});
+
+
 
 function gameOver(score, birdPosition) {
     // Lưu điểm số và vị trí chim vào sessionStorage

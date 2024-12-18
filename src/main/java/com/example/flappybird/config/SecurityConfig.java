@@ -17,8 +17,8 @@ public class SecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**", "/login.html", "/createaccount.html","/home.html" ,
-                                 "/flappybird.png", "/flappybirdbg.png", "/gameover.jpg")
+                .requestMatchers("/api/**", "/login.html", "/createaccount.html","/home.html" ,"/gameover.html",
+                                 "/flappybird.png", "/flappybirdbg.png", "/gameover.jpg" , "leaerboard.html" , "/main.html")
                 .permitAll()  // Cho phép truy cập không yêu cầu đăng nhập
                 .requestMatchers("/home.html").authenticated()  // home.html chỉ cho phép sau khi đăng nhập
                 .anyRequest().authenticated()  // Các yêu cầu khác cần đăng nhập

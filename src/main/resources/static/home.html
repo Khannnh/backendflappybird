@@ -127,10 +127,17 @@
         </button>
     </div>
 
-    <script>
-        document.getElementById("logout").addEventListener("click", function() {
-            window.location.href = "login.html";
-        });
-    </script>
+	<script>
+	    document.getElementById("logout").addEventListener("click", function() {
+	        window.location.href = "login.html";
+	    });
+
+	    // Thêm script cho nút "New game"
+	    document.getElementById("newgame").addEventListener("click", function() {
+	        // Chuyển hướng tới trang main.html
+	        window.location.href = "main.html";
+	    });
+	</script>
+
 </body>
 </html>
