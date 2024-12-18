@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
+	<link rel="icon" href="data:,">
     <title>Login Flappy Bird</title>
     <style>
         body {
@@ -133,18 +133,20 @@
                 }
                 return response.json();
             })
-            .then(data => {
-                if (data.success === true) {
-                    alert('Login successful!');
-                    window.location.href = '/home.html';  // Chuyển hướng sau khi thành công
-                } else {
-                    alert(data.message || 'Login failed. Please check your credentials.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Unable to connect to the server. Please try again later.');
-            });
+			.then(data => {
+			    console.log("API Response:", data);  // Ghi phản hồi API ra console
+			    if (data.success === true) {
+			        alert('Login successful!');
+			        window.location.href = '/home.html';  // Chuyển hướng nếu đăng nhập thành công
+			    } else {
+			        alert(data.message || 'Login failed. Please check your credentials.');
+			    }
+			})
+			.catch(error => {
+			    console.error('Error:', error);  // Ghi lỗi ra console
+			    alert('Unable to connect to the server. Please try again later.');
+			});
+
         }
     </script>
 
