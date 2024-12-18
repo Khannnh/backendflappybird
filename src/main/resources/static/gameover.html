@@ -115,7 +115,7 @@
             font-weight: 900;
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
-        #total_point, #score {
+        #total_point, #score-value {
             color: white;
             font-size: 33px;
         }
@@ -200,7 +200,7 @@
             </tr>
             <tr>
                 <td id="medal" rowspan="3"><i class='fas fa-medal' style='font-size:90px;color:#ffd926'></i></td>
-                <td id="score">103</td>
+                <td id="score-value"></td>
             </tr>
             <tr>
                 <td id="total">TOTAL</td>
@@ -220,8 +220,27 @@
     </div>
 	
 	<script>
+	    // Lấy điểm số từ URL
+	    const params = new URLSearchParams(window.location.search);
+	    const score = params.get('score') || 0;
+
+	    // Hiển thị điểm số
+	    document.getElementById('score-value').innerText = `${score}`;
+	    
+	    // Lưu điểm số vào sessionStorage khi trang load
+	    sessionStorage.setItem('score', score);
+	    
 	    document.getElementById("logout").addEventListener("click", function() {
 	        window.location.href = "login.html";
+	    });
+	    
+	    document.getElementById("continue").addEventListener("click", function() {
+	        // Lấy lại điểm số và vị trí chim từ sessionStorage
+	        const previousScore = sessionStorage.getItem('score') || 0;
+	        const birdPosition = sessionStorage.getItem('birdPosition') || 150; // Đặt giá trị mặc định cho birdPosition
+
+	        // Quay lại trò chơi với trạng thái trước đó (điểm số và vị trí chim)
+	        window.location.href = 'game.html';
 	    });
 	</script>
 </body>

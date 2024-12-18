@@ -5,7 +5,6 @@ let score = 0;
 let isGameOver = false;
 let isPaused = false;
 
-// Tạo ống mới
 function createPipe() {
     let pipeGap = Math.floor(Math.random() * 50) + 120; // Tạo khoảng cách ngẫu nhiên từ 120 đến 170
     let pipeHeight = Math.floor(Math.random() * 200) + 100; // Chiều cao ống ngẫu nhiên từ 100 đến 300
@@ -30,7 +29,6 @@ function createPipe() {
     pipes.push({ top: toppipe, bottom: bottompipe });
 }
 
-// Vị trí ban đầu của con chim
 let birdX = 50;
 let birdY = 150;
 let birdVelocityY = 0;
@@ -45,18 +43,16 @@ function updateBird() {
     bird.style.top = birdY + "px";
     bird.style.left = birdX + "px";
 
-    if (birdY > 570 || birdY < 0 || birdX > 370 || birdX < 0) {
+    if (birdY > 570 || birdY < 0) {
         isGameOver = true;
-        gameOver();
+        gameOver(score, birdY);  // Truyền điểm số và vị trí chim
     }
 }
 
-// Cập nhật điểm
 function updateScore() {
-    document.getElementById("score").innerText = score;
+    document.getElementById("score-value").innerText = score;
 }
 
-// Chơi lại trò chơi
 function restartGame() {
     pipes.forEach(pipe => {
         pipe.top.remove();
@@ -74,20 +70,14 @@ function restartGame() {
     startGame();
 }
 
-// Xử lý sự kiện nhấn phím
 document.addEventListener("keydown", function (e) {
     if (e.code === "Space" && !isGameOver && !isPaused) {
         birdVelocityY = lift;
     } else if (e.code === "Space" && isGameOver) {
         restartGame();
-    } else if (e.code === "KeyP" && !isGameOver && !isPaused) {
-        birdX += 20; // Di chuyển chim sang phải
-    } else if (e.code === "KeyW" && !isGameOver && !isPaused) {
-        birdX -= 20; // Di chuyển chim sang trái
     }
 });
 
-// Cập nhật và di chuyển các ống
 function updatePipes() {
     if (isPaused || isGameOver) return;
 
@@ -113,12 +103,11 @@ function updatePipes() {
             (birdY + bird.height > bottomPipe.offsetTop && pipeX < birdX + bird.width && pipeX + 50 > birdX)
         ) {
             isGameOver = true;
-            gameOver();
+            gameOver(score, birdY);  // Truyền điểm số và vị trí chim
         }
     });
 }
 
-// Vẽ tất cả các đối tượng
 function draw() {
     if (isPaused || isGameOver) return;
     updateBird();
@@ -126,7 +115,6 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
-// Đếm ngược trước khi bắt đầu trò chơi
 function countdown(callback) {
     let countdownElement = document.createElement("div");
     countdownElement.id = "countdown";
@@ -151,8 +139,8 @@ function countdown(callback) {
     }, 1000);
 }
 
-// Bắt đầu trò chơi
 function startGame() {
+    birdVelocityY = 0; // Dừng chim rơi trong lúc đếm ngược
     countdown(() => {
         createPipe();
         setInterval(createPipe, 3000);
@@ -160,14 +148,12 @@ function startGame() {
     });
 }
 
-// Tạm dừng trò chơi
 function pauseGame() {
     isPaused = true;
     document.getElementById("pauseButton").style.display = "none";
     document.getElementById("resumeButton").style.display = "block";
 }
 
-// Tiếp tục trò chơi
 function resumeGame() {
     isPaused = false;
     document.getElementById("pauseButton").style.display = "block";
@@ -175,16 +161,23 @@ function resumeGame() {
     draw();
 }
 
-// Chuyển đến trang gameover.html khi trò chơi kết thúc
-function gameOver() {
-    window.location.href = "gameover.html";
+function gameOver(score, birdPosition) {
+    // Lưu điểm số và vị trí chim vào sessionStorage
+    sessionStorage.setItem('score', score);
+    sessionStorage.setItem('birdPosition', birdPosition);
+    isPaused = true; // Dừng các hoạt động trước khi đếm ngược
+    window.location.href = 'gameover.html?score=' + score + '&birdPosition=' + birdPosition;
 }
 
-// Sự kiện cho nút "Pause"
-document.getElementById("pauseButton").addEventListener("click", pauseGame);
+// Lấy điểm số và vị trí chim từ URL (khi tiếp tục trò chơi)
+const params = new URLSearchParams(window.location.search);
+const previousScore = parseInt(params.get('score')) || 0;
+const birdPosition = parseInt(params.get('birdPosition')) || 150;
 
-// Sự kiện cho nút "Resume"
-document.getElementById("resumeButton").addEventListener("click", resumeGame);
+// Cập nhật điểm số
+updateScore(previousScore);
 
-// Khởi động trò chơi
-startGame();
+// Đặt lại vị trí chim
+bird.style.top = birdPosition + "px";
+
+startGame(); // Bắt đầu trò chơi ngay khi tải xong
