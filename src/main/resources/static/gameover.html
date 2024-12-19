@@ -188,7 +188,7 @@
             <div class="dropdown-content">
                 <a href="#logout" id ='logout'><i class='fas fa-sign-out-alt'>&nbsp;</i>Log out</a>
             </div>
-			<div id='player-name' style='color:white'>
+			<div style='color:white'>
 			    <span id="player-name-text"></span>
 			</div>
 
@@ -234,7 +234,7 @@
 	    sessionStorage.setItem('score', score);
 
 	    // Lấy tên người chơi từ sessionStorage
-	    const playerName = sessionStorage.getItem('playerName') || "Unknown Player";  // Nếu không có tên, hiển thị "Unknown Player"
+	    const playerName = sessionStorage.getItem('player') ;  // Nếu không có tên, hiển thị "Unknown Player"
 
 	    // Hiển thị tên người chơi
 	    document.getElementById('player-name-text').innerText = playerName;
@@ -242,8 +242,12 @@
 		
 		// Hiển thị tên người chơi
 		console.log("Tên người chơi từ sessionStorage:", playerName); // Log tên người chơi
-		document.getElementById('player-name-text').innerText = playerName; //
 		
+		document.addEventListener("DOMContentLoaded", function() {
+		    const playerName = sessionStorage.getItem("playerName") || "Unknown Player";
+		    document.getElementById("player-name-text").innerText = playerName;
+		});
+
 	    document.getElementById("logout").addEventListener("click", function() {
 	        window.location.href = "login.html";
 	    });

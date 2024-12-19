@@ -5,36 +5,22 @@ let score = 0;
 let isGameOver = false;
 let isPaused = false;
 
-function createPipe() {
-    let pipeGap = Math.floor(Math.random() * 50) + 120; // Tạo khoảng cách ngẫu nhiên từ 120 đến 170
-    let pipeHeight = Math.floor(Math.random() * 200) + 100; // Chiều cao ống ngẫu nhiên từ 100 đến 300
-
-    let toppipe = document.createElement("img");
-    toppipe.src = "toppipe.png";
-    toppipe.className = "pipe toppipe";
-    toppipe.style.height = pipeHeight + "px";
-    toppipe.style.left = "400px";
-    toppipe.style.position = "absolute";
-    pipeContainer.appendChild(toppipe);
-
-    let bottompipe = document.createElement("img");
-    bottompipe.src = "bottompipe.png";
-    bottompipe.className = "pipe bottompipe";
-    bottompipe.style.height = (600 - pipeHeight - pipeGap) + "px"; // Đảm bảo chiều cao của bottompipe
-    bottompipe.style.left = "400px";
-    bottompipe.style.position = "absolute";
-    bottompipe.style.bottom = "0px"; // Đặt bottompipe bắt đầu từ dưới cùng
-    pipeContainer.appendChild(bottompipe);
-
-    pipes.push({ top: toppipe, bottom: bottompipe });
-}
-
 let birdX = 50;
 let birdY = 150;
 let birdVelocityY = 0;
 const gravity = 0.6;
-const lift = -5; // Giảm biên độ dịch chuyển lên trên
+const lift = -5; // Tốc độ chim bay lên
 
+// Lấy điểm số và vị trí chim từ sessionStorage
+const sessionScore = parseInt(sessionStorage.getItem('score')) || 0;
+const birdStartPosition = parseInt(sessionStorage.getItem('birdPosition')) || 150;
+
+// Đặt lại chim và điểm số khi tiếp tục chơi
+bird.style.top = birdStartPosition + "px";
+
+document.getElementById("score-value").innerText = sessionScore;
+
+// Cập nhật birdY
 function updateBird() {
     if (isPaused || isGameOver) return;
 
@@ -45,45 +31,40 @@ function updateBird() {
 
     if (birdY > 570 || birdY < 0) {
         isGameOver = true;
-        gameOver(score, birdY);  // Truyền điểm số và vị trí chim
+        gameOver(score, birdY);
     }
 }
 
-function updateScore() {
-    document.getElementById("score-value").innerText = score;
-}
+function createPipe() {
+    const pipeGap = Math.floor(Math.random() * 50) + 120;
+    const pipeHeight = Math.floor(Math.random() * 200) + 100;
 
-function restartGame() {
-    pipes.forEach(pipe => {
-        pipe.top.remove();
-        pipe.bottom.remove();
-    });
-    pipes = [];
-    birdY = 150;
-    birdX = 50;
-    birdVelocityY = 0;
-    score = 0;
-    isGameOver = false;
-    isPaused = false;
-    document.getElementById("resumeButton").style.display = "none";
-    document.getElementById("pauseButton").style.display = "block";
-    startGame();
-}
+    const toppipe = document.createElement("img");
+    toppipe.src = "toppipe.png";
+    toppipe.className = "pipe toppipe";
+    toppipe.style.height = pipeHeight + "px";
+    toppipe.style.left = "400px";
+    toppipe.style.position = "absolute";
+    pipeContainer.appendChild(toppipe);
 
-document.addEventListener("keydown", function (e) {
-    if (e.code === "Space" && !isGameOver && !isPaused) {
-        birdVelocityY = lift;
-    } else if (e.code === "Space" && isGameOver) {
-        restartGame();
-    }
-});
+    const bottompipe = document.createElement("img");
+    bottompipe.src = "bottompipe.png";
+    bottompipe.className = "pipe bottompipe";
+    bottompipe.style.height = (600 - pipeHeight - pipeGap) + "px";
+    bottompipe.style.left = "400px";
+    bottompipe.style.position = "absolute";
+    bottompipe.style.bottom = "0px";
+    pipeContainer.appendChild(bottompipe);
+
+    pipes.push({ top: toppipe, bottom: bottompipe });
+}
 
 function updatePipes() {
     if (isPaused || isGameOver) return;
 
     pipes.forEach(pipe => {
-        let topPipe = pipe.top;
-        let bottomPipe = pipe.bottom;
+        const topPipe = pipe.top;
+        const bottomPipe = pipe.bottom;
 
         let pipeX = parseInt(topPipe.style.left.replace("px", ""));
         pipeX -= 2;
@@ -95,7 +76,8 @@ function updatePipes() {
             bottomPipe.remove();
             pipes.shift();
             score++;
-            updateScore();
+            sessionStorage.setItem('score', score);
+            document.getElementById("score-value").innerText = score;
         }
 
         if (
@@ -103,7 +85,7 @@ function updatePipes() {
             (birdY + bird.height > bottomPipe.offsetTop && pipeX < birdX + bird.width && pipeX + 50 > birdX)
         ) {
             isGameOver = true;
-            gameOver(score, birdY);  // Truyền điểm số và vị trí chim
+            gameOver(score, birdY);
         }
     });
 }
@@ -116,7 +98,7 @@ function draw() {
 }
 
 function countdown(callback) {
-    let countdownElement = document.createElement("div");
+    const countdownElement = document.createElement("div");
     countdownElement.id = "countdown";
     countdownElement.style.position = "absolute";
     countdownElement.style.top = "50%";
@@ -128,36 +110,50 @@ function countdown(callback) {
     document.body.appendChild(countdownElement);
 
     let countdownValue = 3;
-    let countdownInterval = setInterval(() => {
+    const countdownInterval = setInterval(() => {
         countdownValue--;
         countdownElement.innerText = countdownValue;
         if (countdownValue === 0) {
             clearInterval(countdownInterval);
             document.body.removeChild(countdownElement);
-            callback();
+            createPipe();
+            setInterval(createPipe, 3000);
+            draw();
         }
     }, 1000);
+}
+
+function restartGame() {
+    pipes.forEach(pipe => {
+        pipe.top.remove();
+        pipe.bottom.remove();
+    });
+    pipes = [];
+    birdY = birdStartPosition;
+    birdVelocityY = 0;
+    score = sessionScore;
+    isGameOver = false;
+    isPaused = false;
+    document.getElementById("resumeButton").style.display = "none";
+    document.getElementById("pauseButton").style.display = "block";
+    startGame();
 }
 
 function startGame() {
     birdVelocityY = 0; // Dừng chim rơi trong lúc đếm ngược
     countdown(() => {
-        createPipe();
-        setInterval(createPipe, 3000);
         draw();
     });
 }
 
 function pauseGame() {
     isPaused = true;
-    console.log("Game paused"); // Debug, nếu cần
 }
 
 function resumeGame() {
     isPaused = false;
     birdVelocityY = 0; // Đặt lại vận tốc chim để tránh rơi đột ngột
-    console.log("Game resumed"); // Debug, nếu cần
-    draw(); // Gọi lại `draw` để tiếp tục vòng lặp trò chơi
+    draw(); // Tiếp tục trò chơi
 }
 
 document.addEventListener("keydown", function (e) {
@@ -172,31 +168,16 @@ document.addEventListener("keydown", function (e) {
     }
 });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const username = localStorage.getItem("username");
-    if (username) {
-        document.getElementById("player").innerText = username;
-    }
+document.addEventListener("DOMContentLoaded", function () {
+    const playerName = localStorage.getItem("username") || "Unknown Player";
+    document.getElementById("player").innerText = playerName;
 });
 
-
-function gameOver(score, birdPosition) {
-    // Lưu điểm số và vị trí chim vào sessionStorage
+function gameOver(score, birdY) {
     sessionStorage.setItem('score', score);
-    sessionStorage.setItem('birdPosition', birdPosition);
-    isPaused = true; // Dừng các hoạt động trước khi đếm ngược
-    window.location.href = 'gameover.html?score=' + score + '&birdPosition=' + birdPosition;
+    sessionStorage.setItem('birdPosition', birdY);
+
+    window.location.href = `gameover.html?score=${score}`;
 }
 
-// Lấy điểm số và vị trí chim từ URL (khi tiếp tục trò chơi)
-const params = new URLSearchParams(window.location.search);
-const previousScore = parseInt(params.get('score')) || 0;
-const birdPosition = parseInt(params.get('birdPosition')) || 150;
-
-// Cập nhật điểm số
-updateScore(previousScore);
-
-// Đặt lại vị trí chim
-bird.style.top = birdPosition + "px";
-
-startGame(); // Bắt đầu trò chơi ngay khi tải xong
+startGame(); // Bắt đầu trò chơi ngay khi trang tải
