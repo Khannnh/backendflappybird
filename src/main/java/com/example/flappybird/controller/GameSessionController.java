@@ -5,8 +5,10 @@ import com.example.flappybird.model.Player;
 import com.example.flappybird.service.GameSessionService;
 import com.example.flappybird.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -35,7 +37,9 @@ public class GameSessionController {
         if (session == null) {
             throw new IllegalArgumentException("Phiên chơi không tồn tại");
         }
-        return gameSessionService.endSession(session, score);
+        
+        // Cập nhật điểm số và thời gian chơi
+        return gameSessionService.endSession(sessionId, score);
     }
 
     // Lấy danh sách các phiên chơi của người chơi

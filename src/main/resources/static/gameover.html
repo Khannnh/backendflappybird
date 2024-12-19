@@ -234,19 +234,17 @@
 	    sessionStorage.setItem('score', score);
 
 	    // Lấy tên người chơi từ sessionStorage
-	    const playerName = sessionStorage.getItem('player') ;  // Nếu không có tên, hiển thị "Unknown Player"
+	    const playerName = sessionStorage.getItem('player') || "Unknown Player"; // Nếu không có tên, hiển thị "Unknown Player"
 
 	    // Hiển thị tên người chơi
 	    document.getElementById('player-name-text').innerText = playerName;
 
-		
-		// Hiển thị tên người chơi
-		console.log("Tên người chơi từ sessionStorage:", playerName); // Log tên người chơi
-		
-		document.addEventListener("DOMContentLoaded", function() {
-		    const playerName = sessionStorage.getItem("playerName") || "Unknown Player";
-		    document.getElementById("player-name-text").innerText = playerName;
-		});
+	    // Log tên người chơi
+	    console.log("Tên người chơi từ sessionStorage:", playerName); 
+
+	    document.addEventListener("DOMContentLoaded", function() {
+	        // Không cần lấy lại playerName ở đây vì đã lấy ở trên
+	    });
 
 	    document.getElementById("logout").addEventListener("click", function() {
 	        window.location.href = "login.html";
@@ -260,6 +258,40 @@
 	        // Quay lại trò chơi với trạng thái trước đó (điểm số và vị trí chim)
 	        window.location.href = 'game.html';
 	    });
+	    
+	    function gameOver(score, birdY) {
+	        sessionStorage.setItem('score', score);
+	        sessionStorage.setItem('birdPosition', birdY);
+
+	        const playerId = localStorage.getItem("playerId"); // Giả sử bạn đã lưu playerId vào localStorage
+	        const totalScore = parseInt(sessionStorage.getItem('totalScore')) || 0; // Lấy total_score từ sessionStorage hoặc mặc định là 0
+	        const playDate = new Date().toISOString(); // Lấy thời gian hiện tại
+
+	        fetch('/api/sessions/end', { // Cập nhật URL endpoint
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/json',
+	            },
+	            body: JSON.stringify({
+	                sessionId: sessionStorage.getItem('sessionId'), // Giả sử bạn đã lưu sessionId vào sessionStorage
+	                score: score
+	            }),
+	        })
+	        .then(response => {
+	            if (!response.ok) {
+	                throw new Error('Network response was not ok');
+	            }
+	            return response.json();
+	        })
+	        .then(data => {
+	            console.log('Success:', data);
+	            window.location.href = `gameover.html?score=${score}`;
+	        })
+	        .catch((error) => {
+	            console.error('Error:', error);
+	            alert('Có lỗi xảy ra khi lưu phiên chơi. Vui lòng thử lại.'); // Thông báo cho người dùng
+	        });
+	    }
 	</script>
 </body>
 </html>

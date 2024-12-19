@@ -14,6 +14,7 @@ public class GameSessionService {
     @Autowired
     private GameSessionRepository gameSessionRepository;
 
+    // Bắt đầu một phiên chơi mới
     public GameSession startNewSession(Player player) {
         GameSession session = new GameSession();
         session.setPlayer(player);
@@ -21,19 +22,28 @@ public class GameSessionService {
         return gameSessionRepository.save(session);
     }
 
-    public GameSession endSession(GameSession session, int score) {
+    // Kết thúc một phiên chơi
+    public GameSession endSession(int sessionId, int score) {
+        GameSession session = getSessionById(sessionId);
+        if (session == null) {
+            throw new IllegalArgumentException("Phiên chơi không tồn tại");
+        }
         session.setScore(score);
+        session.setPlayDate(LocalDateTime.now()); // Cập nhật thời gian chơi
         return gameSessionRepository.save(session);
     }
 
+    // Lấy danh sách các phiên chơi của người chơi
     public List<GameSession> getSessionsByPlayer(Player player) {
         return gameSessionRepository.findByPlayer(player);
     }
 
+    // Lấy phiên chơi theo ID
     public GameSession getSessionById(int sessionId) {
         return gameSessionRepository.findById(sessionId).orElse(null);
     }
 
+    // Lấy tổng điểm của người chơi
     public int getTotalScoreByPlayer(Player player) {
         List<GameSession> sessions = getSessionsByPlayer(player);
         return sessions.stream().mapToInt(GameSession::getScore).sum();
