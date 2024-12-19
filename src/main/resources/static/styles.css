@@ -46,7 +46,7 @@ html, body {
 #score-container {
     position: absolute;
     top: 10px;
-    left: 10px;
+    left: 35%;
     font-size: 24px;
     color: white;
     font-family: 'Press Start 2P', cursive;

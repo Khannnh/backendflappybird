@@ -87,8 +87,8 @@
             background-color: transparent; /* làm cho màu nền trong suốt*/
             border: none; /* Nếu bạn muốn loại bỏ viền của nút */
             box-shadow: none;
-            font-size: 32px;
-            margin-left: 0px;
+            font-size: 20px;
+            margin-left: 10px;
             font-family: Arial, sans-serif;
             font-family: 'Press Start 2P', cursive;
         }
@@ -137,7 +137,7 @@
             justify-content: center;
             align-items: center;
             margin-top: 20px;
-            gap: 120px;
+            gap: 50px;
             background-color: transparent; /* làm cho màu nền trong suốt*/
             border: none; /* Nếu bạn muốn loại bỏ viền của nút */
         }
@@ -186,9 +186,12 @@
         <div class="dropdown">
             <button class="dropbtn"><i class="fa fa-user-circle-o" style="font-size:38px;color:white "></i></button>
             <div class="dropdown-content">
-                <a href="#info"><i class='fas fa-user-alt'></i>&nbsp;User information</a>
                 <a href="#logout" id ='logout'><i class='fas fa-sign-out-alt'>&nbsp;</i>Log out</a>
             </div>
+			<div id='player-name' style='color:white'>
+			    <span id="player-name-text"></span>
+			</div>
+
         </div>
     </div>
     <h1>Game Over</h1>
@@ -220,16 +223,27 @@
     </div>
 	
 	<script>
-	    // Lấy điểm số từ URL
+	    // Lấy điểm số từ URL hoặc từ sessionStorage
 	    const params = new URLSearchParams(window.location.search);
-	    const score = params.get('score') || 0;
+	    const score = params.get('score') || sessionStorage.getItem('score') || 0;
 
 	    // Hiển thị điểm số
 	    document.getElementById('score-value').innerText = `${score}`;
-	    
+
 	    // Lưu điểm số vào sessionStorage khi trang load
 	    sessionStorage.setItem('score', score);
-	    
+
+	    // Lấy tên người chơi từ sessionStorage
+	    const playerName = sessionStorage.getItem('playerName') || "Unknown Player";  // Nếu không có tên, hiển thị "Unknown Player"
+
+	    // Hiển thị tên người chơi
+	    document.getElementById('player-name-text').innerText = playerName;
+
+		
+		// Hiển thị tên người chơi
+		console.log("Tên người chơi từ sessionStorage:", playerName); // Log tên người chơi
+		document.getElementById('player-name-text').innerText = playerName; //
+		
 	    document.getElementById("logout").addEventListener("click", function() {
 	        window.location.href = "login.html";
 	    });
