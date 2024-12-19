@@ -84,63 +84,63 @@
         </form>
     </div>
 
-    <script>
-        document.getElementById('create-account-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
+	<script>
+	    document.getElementById('create-account-form').addEventListener('submit', async (e) => {
+	        e.preventDefault();
 
-            const username = document.getElementById('new-username').value.trim();
-            const password = document.getElementById('new-password').value.trim();
-            const ten = document.getElementById('new-name').value.trim();
+	        const username = document.getElementById('new-username').value.trim();
+	        const password = document.getElementById('new-password').value.trim();
+	        const ten = document.getElementById('new-name').value.trim();
 
-            if (!username || username.length < 5) {
-                alert('Username must be at least 5 characters!');
-                return;
-            }
-            if (!password || password.length < 6) {
-                alert('Password must be at least 6 characters!');
-                return;
-            }
-            if (!ten || ten.length < 3) {
-                alert('Name must be at least 3 characters!');
-                return;
-            }
+	        if (!username || username.length < 5) {
+	            alert('Username must be at least 5 characters!');
+	            return;
+	        }
+	        if (!password || password.length < 6) {
+	            alert('Password must be at least 6 characters!');
+	            return;
+	        }
+	        if (!ten || ten.length < 3) {
+	            alert('Name must be at least 3 characters!');
+	            return;
+	        }
 
-            try {
-                // Tạo tài khoản
-                const response = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, pw: password, ten }),
-                });
+	        try {
+	            // Tạo tài khoản
+	            const response = await fetch('/api/register', {
+	                method: 'POST',
+	                headers: { 'Content-Type': 'application/json' },
+	                body: JSON.stringify({ username, pw: password, ten }),
+	            });
 
-                if (response.ok) {
-                    const result = await response.json();
-                    alert(result.message);
+	            if (response.ok) {
+	                const result = await response.json(); // Chỉ gọi .json() nếu phản hồi là JSON
+	                alert(result.message); // Hiển thị thông báo từ phản hồi
 
-                    if (result.message === "Tạo tài khoản thành công!") {
-                        // Tự động đăng nhập sau khi tạo tài khoản
-                        const loginResponse = await fetch('/api/login', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ username, pw: password }),
-                        });
+	                if (result.message === "Tạo tài khoản thành công!") {
+	                    // Tự động đăng nhập sau khi tạo tài khoản
+	                    const loginResponse = await fetch('/api/login', {
+	                        method: 'POST',
+	                        headers: { 'Content-Type': 'application/json' },
+	                        body: JSON.stringify({ username, pw: password }),
+	                    });
 
-                        if (loginResponse.ok) {
-                            window.location.href = "home.html"; // Chuyển hướng đến home.html sau khi đăng nhập thành công
-                        } else {
-                            const errorMessage = await loginResponse.text();
-                            alert(`Login failed: ${errorMessage}`);
-                        }
-                    }
-                } else {
-                    const errorMessage = await response.text();
-                    alert(`Error: ${errorMessage}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Unable to connect to the server!');
-            }
-        });
-    </script>
+	                    if (loginResponse.ok) {
+	                        window.location.href = "home.html"; // Chuyển hướng đến home.html sau khi đăng nhập thành công
+	                    } else {
+	                        const errorMessage = await loginResponse.text();
+	                        alert(`Login failed: ${errorMessage}`);
+	                    }
+	                }
+	            } else {
+	                const errorMessage = await response.text(); // Lấy phản hồi dưới dạng văn bản
+	                alert(`Error: ${errorMessage}`);
+	            }
+	        } catch (error) {
+	            console.error('Error:', error);
+	            alert('Unable to connect to the server!');
+	        }
+	    });
+	</script>
 </body>
 </html>

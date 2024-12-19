@@ -40,7 +40,7 @@ public class LoginController {
     public ResponseEntity<Map<String, Object>> logout() {
         Map<String, Object> response = new HashMap<>();
 
-        // Đăng xuất và xóa thông tin xác thực trong SecurityContext
+        // Đăng xuất (không có thông tin xác thực để xóa)
         response.put("success", true);
         response.put("message", "Đăng xuất thành công!");
         return ResponseEntity.ok(response);  // Trả về phản hồi thành công

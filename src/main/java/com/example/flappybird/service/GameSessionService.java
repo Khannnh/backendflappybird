@@ -30,8 +30,12 @@ public class GameSessionService {
         return gameSessionRepository.findByPlayer(player);
     }
 
-	public GameSession getSessionById(int sessionId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public GameSession getSessionById(int sessionId) {
+        return gameSessionRepository.findById(sessionId).orElse(null);
+    }
+
+    public int getTotalScoreByPlayer(Player player) {
+        List<GameSession> sessions = getSessionsByPlayer(player);
+        return sessions.stream().mapToInt(GameSession::getScore).sum();
+    }
 }

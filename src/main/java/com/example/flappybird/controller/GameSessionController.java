@@ -18,21 +18,53 @@ public class GameSessionController {
     @Autowired
     private PlayerService playerService;
 
+    // Bắt đầu một phiên chơi mới
     @PostMapping("/start")
     public GameSession startNewSession(@RequestParam String username) {
         Player player = playerService.findByUsername(username);
+        if (player == null) {
+            throw new IllegalArgumentException("Người chơi không tồn tại");
+        }
         return gameSessionService.startNewSession(player);
     }
 
+    // Kết thúc một phiên chơi
     @PostMapping("/end")
     public GameSession endSession(@RequestParam int sessionId, @RequestParam int score) {
         GameSession session = gameSessionService.getSessionById(sessionId);
+        if (session == null) {
+            throw new IllegalArgumentException("Phiên chơi không tồn tại");
+        }
         return gameSessionService.endSession(session, score);
     }
 
+    // Lấy danh sách các phiên chơi của người chơi
     @GetMapping("/player/{username}")
     public List<GameSession> getSessionsByPlayer(@PathVariable String username) {
         Player player = playerService.findByUsername(username);
+        if (player == null) {
+            throw new IllegalArgumentException("Người chơi không tồn tại");
+        }
         return gameSessionService.getSessionsByPlayer(player);
+    }
+
+    // Lấy phiên chơi theo ID
+    @GetMapping("/{sessionId}")
+    public GameSession getSessionById(@PathVariable int sessionId) {
+        GameSession session = gameSessionService.getSessionById(sessionId);
+        if (session == null) {
+            throw new IllegalArgumentException("Phiên chơi không tồn tại");
+        }
+        return session;
+    }
+
+    // Lấy tổng điểm của người chơi
+    @GetMapping("/total-score")
+    public int getTotalScore(@RequestParam String username) {
+        Player player = playerService.findByUsername(username);
+        if (player == null) {
+            throw new IllegalArgumentException("Người chơi không tồn tại");
+        }
+        return gameSessionService.getTotalScoreByPlayer(player);
     }
 }

@@ -23,6 +23,8 @@ public class GameSession {
 
     private LocalDateTime playDate;
 
+    private int totalPoint; // Thêm trường totalPoint
+
     // Getters and setters
 
     public int getId() {
@@ -55,5 +57,13 @@ public class GameSession {
 
     public void setPlayDate(LocalDateTime playDate) {
         this.playDate = playDate;
+    }
+
+    public int getTotalPoint() { // Getter cho totalPoint
+        return totalPoint;
+    }
+
+    public void setTotalPoint(int totalPoint) { // Setter cho totalPoint
+        this.totalPoint = totalPoint;
     }
 }
