@@ -164,6 +164,14 @@
 		            alert('Có lỗi xảy ra trong quá trình đăng xuất.'); // Thông báo cho người dùng
 		        });
 		});
+		
+		//lấy tên của người đăng nhập 
+		document.getElementById("newgame").addEventListener("click", function() {
+		    const username = document.getElementById("user_info").innerText;
+		    localStorage.setItem("username", username);
+		    window.location.href = "main.html";
+		});
+
 	</script>
 
 </body>

@@ -172,6 +172,12 @@ document.addEventListener("keydown", function (e) {
     }
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    const username = localStorage.getItem("username");
+    if (username) {
+        document.getElementById("player").innerText = username;
+    }
+});
 
 
 function gameOver(score, birdPosition) {
