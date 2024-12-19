@@ -4,6 +4,11 @@ package com.example.flappybird.controller;
 import com.example.flappybird.model.Player;
 import com.example.flappybird.service.PlayerService;
 
+import jakarta.servlet.http.HttpSession;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,4 +43,7 @@ public class PlayerController {
             return ResponseEntity.notFound().build(); // Nếu không tìm thấy người chơi
         }
     }
+    
+    
+    
 }
