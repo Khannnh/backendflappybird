@@ -1,5 +1,4 @@
 package com.example.flappybird.service;
-
 import com.example.flappybird.model.GameSession;
 import com.example.flappybird.repository.GameSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

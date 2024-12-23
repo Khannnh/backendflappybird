@@ -56,10 +56,9 @@ public class PlayerService {
         return false; // Tên người dùng không tồn tại
     }
 
-	public Player findById(int playerId) {
-        // Sử dụng Optional để tránh NullPointerException
-        Optional<Player> playerOptional = playerRepository.findById(playerId);
-        return playerOptional.orElse(null); // Trả về null nếu không tìm thấy người chơi
-		
-	}
+    public Player findById(int player_id) {
+        return playerRepository.findById(player_id)
+                .orElseThrow(() -> new IllegalArgumentException("Player ID không tồn tại: " + player_id));
+    }
+
 }

@@ -225,7 +225,7 @@
 	<script>
 	    document.addEventListener("DOMContentLoaded", function () {
 	        const score = new URLSearchParams(window.location.search).get('score'); // Lấy điểm số từ URL
-	        const playerId = localStorage.getItem("playerId"); // Lấy playerId từ localStorage
+	        const playerId = localStorage.getItem("player_id"); // Lấy playerId từ localStorage
 
 	        // Kiểm tra xem playerId có tồn tại không
 	        if (!playerId) {
@@ -234,6 +234,22 @@
 	            window.location.href = 'login.html'; // Chuyển hướng về trang đăng nhập
 	            return; // Dừng thực hiện nếu playerId không tồn tại
 	        }
+//lấy thông tin tên người chơi 
+	fetch('/api/user-info')
+	    .then(response => response.json())
+	    .then(data => {
+	        if (data.name) {
+	            // Hiển thị tên người dùng đã đăng nhập
+	            document.getElementById('user_info').innerText = data.name;
+	        } else {
+	            // Hiển thị "Khách" nếu không có thông tin
+	            document.getElementById('user_info').innerText = 'Khách';
+	        }
+	    })
+	    .catch(error => {
+	        console.error('Error fetching user info:', error);
+	        document.getElementById('user_info').innerText = 'Unknown';
+	    });
 			
 //nhấn để đăng xuất 
 document.getElementById("logout").addEventListener("click", function() {
@@ -270,50 +286,56 @@ document.getElementById("logout").addEventListener("click", function() {
         });
 });
 
-	        // Kiểm tra và chuyển đổi score thành số nguyên
-	        const parsedScore = parseInt(score, 10);
-	        if (isNaN(parsedScore)) {
-	            console.error("Điểm số không hợp lệ:", score);
-	            alert("Điểm số không hợp lệ."); // Thông báo cho người dùng
-	            return; // Dừng thực hiện nếu score không hợp lệ
-	        }
+// Kiểm tra và chuyển đổi score thành số nguyên
+const parsedScore = parseInt(score, 10);
+if (isNaN(parsedScore)) {
+    console.error("Điểm số không hợp lệ:", score);
+    alert("Điểm số không hợp lệ.");
+    return;
+}
 
-	        // Kiểm tra và chuyển đổi playerId thành số nguyên
-	        const parsedPlayerId = parseInt(playerId, 10);
-	        if (isNaN(parsedPlayerId)) {
-	            console.error("playerId không hợp lệ:", playerId);
-	            alert("playerId không hợp lệ."); // Thông báo cho người dùng
-	            return; // Dừng thực hiện nếu playerId không hợp lệ
-	        }
+// Kiểm tra và chuyển đổi playerId thành số nguyên
+const parsedPlayerId = parseInt(playerId, 10);
+if (isNaN(parsedPlayerId)) {
+    console.error("playerId không hợp lệ:", playerId);
+    alert("playerId không hợp lệ.");
+    return;
+}
 
-	        // Hiển thị điểm số
-	        document.getElementById("score-value").innerText = parsedScore;
+// Hiển thị điểm số
+document.getElementById("score-value").innerText = parsedScore;
 
-	        // Gọi API để lưu thông tin phiên chơi
-	        fetch('/api/gameover', {
-	            method: 'POST',
-	            headers: {
-	                'Content-Type': 'application/json'
-	            },
-	            body: JSON.stringify({
-	                playerId: parsedPlayerId, // ID của người chơi
-	                score: parsedScore         // Điểm số
-	            })
-	        })
-	        .then(response => {
-	            if (response.ok) {
-	                console.log('Thông tin phiên chơi đã được lưu thành công!');
-	                alert('Thông tin phiên chơi đã được lưu thành công!'); // Thông báo cho người dùng
-	            } else {
-	                console.error('Có lỗi xảy ra khi lưu thông tin phiên chơi.');
-	                alert('Có lỗi xảy ra khi lưu thông tin phiên chơi.'); // Thông báo cho người dùng
-	            }
-	        })
-	        .catch(error => {
-	            console.error('Error:', error);
-	            alert('Có lỗi xảy ra trong quá trình kết nối đến server.'); // Thông báo cho người dùng
-	        });
-	    });
+// Gọi API để lưu thông tin phiên chơi
+async function saveGameOverInfo() {
+    try {
+        const response = await fetch('/api/gameover', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                player_id: parsedPlayerId, // ID của người chơi
+                score: parsedScore,         // Điểm số
+                play_date: new Date().toISOString() // Thời gian đạt điểm
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Có lỗi xảy ra khi lưu thông tin phiên chơi:', errorData);
+            alert('Có lỗi xảy ra khi lưu thông tin phiên chơi.');
+        } else {
+            console.log('Thông tin phiên chơi đã được lưu thành công!');
+            alert('Thông tin phiên chơi đã được lưu thành công!');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra trong quá trình kết nối đến server.');
+    }
+}
+// Gọi hàm saveGameOverInfo
+saveGameOverInfo();
+
 
 	    document.getElementById("continue").addEventListener("click", function() {
 	        window.location.href = 'main.html'; // Quay lại trò chơi

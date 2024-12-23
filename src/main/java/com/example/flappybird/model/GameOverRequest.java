@@ -1,23 +1,33 @@
 package com.example.flappybird.model;
 
+import java.time.LocalDateTime;
+
 public class GameOverRequest {
-    private int playerId; // ID của người chơi
+    private int player_id; // ID của người chơi
     private int score;    // Điểm số
+    private LocalDateTime play_date;
+    
+	public int getPlayer_id() {
+		return player_id;
+	}
 
-    // Getters và Setters
-    public int getPlayerId() {
-        return playerId;
-    }
+	public LocalDateTime getPlay_date() {
+		return play_date;
+	}
 
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
-    }
+	public void setPlay_date(LocalDateTime play_date) {
+		this.play_date = play_date;
+	}
 
-    public int getScore() {
-        return score;
-    }
+	public void setPlayer_id(int player_id) {
+		this.player_id = player_id;
+	}
+	public int getScore() {
+		return score;
+	}
+	public void setScore(int score) {
+		this.score = score;
+	}
 
-    public void setScore(int score) {
-        this.score = score;
-    }
+
 }

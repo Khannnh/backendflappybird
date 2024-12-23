@@ -92,64 +92,70 @@
         </form>
         <p>Don't have an account? <a href="createaccount.html" id="register-link">Create account</a></p>
     </div>
-    <script>
-        document.getElementById("login-form").addEventListener("submit", (event) => {
-            event.preventDefault(); // Ngăn form reload trang
-            submitLogin();
-        });
+	<script>
+	    document.getElementById("login-form").addEventListener("submit", (event) => {
+	        event.preventDefault(); // Ngăn form reload trang
+	        submitLogin();
+	    });
 
-        function submitLogin() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+	    function submitLogin() {
+	        const username = document.getElementById('username').value.trim();
+	        const password = document.getElementById('password').value.trim();
 
-            // Kiểm tra input client-side
-            if (!username || !password) {
-                alert('Please fill in both username and password!');
-                return;
-            }
-            if (username.length < 3 || password.length < 6) {
-                alert('Username must be at least 3 characters and password at least 6 characters!');
-                return;
-            }
+	        // Kiểm tra input client-side
+	        if (!username || !password) {
+	            alert('Vui lòng nhập đầy đủ tên người dùng và mật khẩu!');
+	            return;
+	        }
+	        if (username.length < 3 || password.length < 6) {
+	            alert('Tên người dùng phải ít nhất 3 ký tự và mật khẩu ít nhất 6 ký tự!');
+	            return;
+	        }
 
-            fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', // Bao gồm cookie để duy trì session
-                body: JSON.stringify({ username, password })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        alert("Invalid username or password!");
-                    } else if (response.status === 500) {
-                        alert("Internal server error. Please try again later.");
-                    } else {
-                        alert("Unexpected error: " + response.statusText);
-                    }
-                    return Promise.reject("Server error");
-                }
-                return response.json();
-            })
-			.then(data => {
-			    console.log("API Response:", data);  // Ghi phản hồi API ra console
-			    if (data.success === true) {
-					// Lưu thông tin vào localStorage
-					localStorage.setItem("playerId", data.playerId);
-					localStorage.setItem('username', data.username); // Lưu tên người dùng
-					localStorage.setItem('name', data.name); // Nếu bạn có trường name trong phản hồi
-			        alert('Login successful!');
-			        window.location.href = '/home.html';  // Chuyển hướng nếu đăng nhập thành công
-			    } else {
-			        alert(data.message || 'Login failed. Please check your credentials.');
-			    }
-			})
-			.catch(error => {
-			    console.error('Error:', error);  // Ghi lỗi ra console
-			    alert('Unable to connect to the server. Please try again later.');
-			});
-        }
-    </script>
+	        // Gửi yêu cầu đăng nhập tới backend
+	        fetch('/api/login', {
+	            method: 'POST',
+	            headers: { 'Content-Type': 'application/json' },
+	            credentials: 'include', // Bao gồm cookie để duy trì session
+	            body: JSON.stringify({ username, password })
+	        })
+	        .then(response => {
+	            if (!response.ok) {
+	                if (response.status === 401) {
+	                    alert("Tài khoản hoặc mật khẩu không đúng!");
+	                } else if (response.status === 500) {
+	                    alert("Lỗi hệ thống. Vui lòng thử lại sau.");
+	                } else {
+	                    alert("Lỗi không xác định: " + response.statusText);
+	                }
+	                return Promise.reject("Lỗi server");
+	            }
+	            return response.json();
+	        })
+	        .then(data => {
+	            console.log("Phản hồi API:", data); // Log phản hồi để kiểm tra
+	            if (data.success) {
+	                // Lưu thông tin vào localStorage
+	                localStorage.setItem("playerId", data.player_id || "");
+	                localStorage.setItem("username", data.username || "");
+	                localStorage.setItem("name", data.name || "");
+
+	                alert('Đăng nhập thành công!');
+	                console.log('ID của người chơi: ' + data.player_id);
+
+	                // Chuyển hướng đến trang home
+	                window.location.href = '/home.html';
+	            } else {
+	                alert(data.message || 'Đăng nhập thất bại. Vui lòng kiểm tra thông tin.');
+	            }
+	        })
+	        .catch(error => {
+	            console.error('Lỗi:', error); // Log lỗi để kiểm tra
+	            alert('Không thể kết nối tới máy chủ. Vui lòng thử lại sau.');
+	        });
+	    }
+	</script>
+
 
 </body>
 </html>

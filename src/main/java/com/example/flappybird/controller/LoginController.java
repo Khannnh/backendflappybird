@@ -41,10 +41,13 @@ public class LoginController {
         response.put("success", true);
         response.put("message", "Đăng nhập thành công!");
         response.put("username", player.getUsername());
-
+        response.put("name", player.getName());
+        response.put("player_id", player.getId());
+        
         // Lưu thông tin vào session
         session.setAttribute("username", player.getUsername());
         session.setAttribute("name", player.getName());
+        session.setAttribute("player_id" , player.getId());
 
         // Log thông tin để kiểm tra
         System.out.println("Username saved in session: " + player.getUsername());
