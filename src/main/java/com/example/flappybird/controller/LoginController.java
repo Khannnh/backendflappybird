@@ -44,7 +44,7 @@ public class LoginController {
 
         // Lưu thông tin vào session
         session.setAttribute("username", player.getUsername());
-        session.setAttribute("ten", player.getName());
+        session.setAttribute("name", player.getName());
 
         // Log thông tin để kiểm tra
         System.out.println("Username saved in session: " + player.getUsername());
@@ -57,7 +57,7 @@ public class LoginController {
     public ResponseEntity<Map<String, String>> getUserInfo(HttpSession session) {
         Map<String, String> userInfo = new HashMap<>();
         String username = (String) session.getAttribute("username");
-        String name = (String) session.getAttribute("ten");
+        String name = (String) session.getAttribute("name");
 
         if (username == null || name == null) {
             userInfo.put("error", "Session không tồn tại hoặc đã hết hạn.");
@@ -68,12 +68,12 @@ public class LoginController {
 
         // Log thông tin để kiểm tra
         System.out.println("Username from session: " + username);
-        System.out.println("Ten from session: " + name);
+        System.out.println("Name from session: " + name);
 
         return ResponseEntity.ok(userInfo);
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public ResponseEntity<Map<String, Object>> logout(HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         String username = (String) session.getAttribute("username");
@@ -81,9 +81,22 @@ public class LoginController {
         // Hủy session
         session.invalidate();
 
+        // Ghi log thông tin đăng xuất
+        System.out.println("User  " + username + " has logged out.");
+
         response.put("success", true);
         response.put("message", "Đăng xuất thành công!");
         response.put("username", username); // Gửi lại thông tin username đã đăng xuất
+        return ResponseEntity.ok(response);
+    }
+    //kiểm tra đã đăng xuất chưa
+    @GetMapping("/check-session")
+    public ResponseEntity<Map<String, Boolean>> checkSession(HttpSession session) {
+        Map<String, Boolean> response = new HashMap<>();
+        String username = (String) session.getAttribute("username");
+
+        // Kiểm tra xem session có còn tồn tại không
+        response.put("loggedIn", username != null);
         return ResponseEntity.ok(response);
     }
 }

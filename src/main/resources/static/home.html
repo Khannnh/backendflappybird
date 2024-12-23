@@ -122,9 +122,9 @@
 		fetch('/api/user-info')
 		    .then(response => response.json())
 		    .then(data => {
-		        if (data.ten) {
+		        if (data.name) {
 		            // Hiển thị tên người dùng đã đăng nhập
-		            document.getElementById('user_info').innerText = data.ten;
+		            document.getElementById('user_info').innerText = data.name;
 		        } else {
 		            // Hiển thị "Khách" nếu không có thông tin
 		            document.getElementById('user_info').innerText = 'Khách';
@@ -132,7 +132,7 @@
 		    })
 		    .catch(error => {
 		        console.error('Error fetching user info:', error);
-		        document.getElementById('user_info').innerText = 'Khách';
+		        document.getElementById('user_info').innerText = 'Unknown';
 		    });
 
 	        
@@ -141,22 +141,33 @@
 	        // Chuyển hướng tới trang main.html
 	        window.location.href = "main.html";
 	    });
-	    
-	    // Để đăng xuất 
+	    //nhấn để đăng xuất 
 		document.getElementById("logout").addEventListener("click", function() {
-		    fetch('/logout', { method: 'POST' })
+		    fetch('/api/logout', { method: 'POST' }) // Sử dụng POST cho đăng xuất
 		        .then(response => {
 		            console.log('Response status:', response.status); // In ra mã trạng thái
-		            return response.text(); // Lấy nội dung phản hồi
+		            return response.json(); // Lấy nội dung phản hồi dưới dạng JSON
 		        })
-		        .then(text => {
-		            console.log('Response body:', text); // In ra nội dung phản hồi
-		            if (response.ok) {
+		        .then(data => {
+		            console.log('Response body:', data); // In ra nội dung phản hồi
+		            if (data.success) {
 		                alert('Đăng xuất thành công!'); // Thông báo cho người dùng
-		                window.location.href = "login.html"; // Chuyển hướng về trang đăng nhập
+		                // Kiểm tra session sau khi đăng xuất bằng cách tiếp tục gọi API kiểm tra
+		                return fetch('/api/check-session');
 		            } else {
 		                console.error('Error logging out');
 		                alert('Đăng xuất không thành công. Vui lòng thử lại.'); // Thông báo cho người dùng
+		            }
+		        })
+		        .then(sessionCheckResponse => {
+		            return sessionCheckResponse.json();
+		        })
+		        .then(sessionCheckData => {
+		            if (!sessionCheckData.loggedIn) {
+		                console.log("User  is successfully logged out.");
+		                window.location.href = "login.html"; // Chuyển hướng về trang đăng nhập
+		            } else {
+		                console.error("User  is still logged in.");
 		            }
 		        })
 		        .catch(error => {

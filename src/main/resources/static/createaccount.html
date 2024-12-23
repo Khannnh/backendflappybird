@@ -90,7 +90,7 @@
 
 	        const username = document.getElementById('new-username').value.trim();
 	        const password = document.getElementById('new-password').value.trim();
-	        const ten = document.getElementById('new-name').value.trim();
+	        const name = document.getElementById('new-name').value.trim();
 
 	        if (!username || username.length < 5) {
 	            alert('Username must be at least 5 characters!');
@@ -100,7 +100,7 @@
 	            alert('Password must be at least 6 characters!');
 	            return;
 	        }
-	        if (!ten || ten.length < 3) {
+	        if (!name || name.length < 3) {
 	            alert('Name must be at least 3 characters!');
 	            return;
 	        }
@@ -110,7 +110,7 @@
 	            const response = await fetch('/api/register', {
 	                method: 'POST',
 	                headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ name: ten, username, password }),
+					body: JSON.stringify({ name, username, password }),
 	            });
 
 	            if (response.ok) {
