@@ -88,7 +88,7 @@
             border: none; /* Nếu bạn muốn loại bỏ viền của nút */
             box-shadow: none;
             font-size: 20px;
-            margin-left: 10px;
+            margin-left: -50px;
             font-family: Arial, sans-serif;
             font-family: 'Press Start 2P', cursive;
         }
@@ -137,7 +137,7 @@
             justify-content: center;
             align-items: center;
             margin-top: 20px;
-            gap: 50px;
+            gap: 96px;
             background-color: transparent; /* làm cho màu nền trong suốt*/
             border: none; /* Nếu bạn muốn loại bỏ viền của nút */
         }
@@ -209,7 +209,7 @@
                 <td id="total">TOTAL</td>
             </tr>
             <tr>
-                <td id="total_point">110</td>
+                <td id="total_point"></td>
             </tr>
         </table>
     </div>
@@ -232,20 +232,40 @@
 
 	    // Lưu điểm số vào sessionStorage khi trang load
 	    localStorage.setItem('score', score);
+		
+		// Lấy thông tin người dùng từ session
+		fetch('/api/user-info')
+		    .then(response => response.json())
+		    .then(data => {
+		        if (data.name) {
+		            // Hiển thị tên người dùng đã đăng nhập
+		            document.getElementById('player-name-text').innerText = data.name;
+		        } else {
+		            // Hiển thị "Khách" nếu không có thông tin
+		            document.getElementById('player-name-text').innerText = 'Khách';
+		        }
+		    })
+		    .catch(error => {
+		        console.error('Error fetching user info:', error);
+		        document.getElementById('player-name-text').innerText = 'Unknown';
+		    });
 
-	    // Lấy tên người chơi từ sessionStorage
-	    const playerName = localStorage.getItem('player') || "Unknown Player"; 
-		// Nếu không có tên, hiển thị "Unknown Player"
-
-	    // Hiển thị tên người chơi
-	    document.getElementById('player-name-text').innerText = playerName;
-
-	    // Log tên người chơi
-	    console.log("Tên người chơi từ sessionStorage:", playerName); 
-
-	    document.addEventListener("DOMContentLoaded", function() {
-	        // Không cần lấy lại playerName ở đây vì đã lấy ở trên
-	    });
+		// Lấy thông tin người dùng từ session
+		fetch('/api/user-info')
+		    .then(response => response.json())
+		    .then(data => {
+		        if (data.name) {
+		            // Hiển thị tên người dùng đã đăng nhập
+		            document.getElementById('user_info').innerText = data.name;
+		        } else {
+		            // Hiển thị "Khách" nếu không có thông tin
+		            document.getElementById('user_info').innerText = 'Khách';
+		        }
+		    })
+		    .catch(error => {
+		        console.error('Error fetching user info:', error);
+		        document.getElementById('user_info').innerText = 'Unknown';
+		    });
 		
 		//nhấn để đăng xuất 
 		document.getElementById("logout").addEventListener("click", function() {

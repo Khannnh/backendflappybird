@@ -76,6 +76,7 @@ public class LoginController {
     @PostMapping("/logout")
     public ResponseEntity<Map<String, Object>> logout(HttpSession session) {
         Map<String, Object> response = new HashMap<>();
+        //lưu trữ cặp giá trị key-value, ở đây là String-object
         String username = (String) session.getAttribute("username");
 
         // Hủy session
