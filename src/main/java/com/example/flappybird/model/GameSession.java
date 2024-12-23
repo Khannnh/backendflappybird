@@ -26,7 +26,8 @@ public class GameSession {
     public GameSession() {
         this.playDate = LocalDateTime.now(); // Set default play date to now
     }
-
+    
+    //constructor tạo mới đối tượng GameSession gồm đối tượng player và score 
     public GameSession(Player player, int score) {
         this.player = player;
         this.score = score;

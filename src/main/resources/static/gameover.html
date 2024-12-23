@@ -223,128 +223,101 @@
     </div>
 	
 	<script>
-	    // Lấy điểm số từ URL hoặc từ sessionStorage
-	    const params = new URLSearchParams(window.location.search);
-	    const score = params.get('score') || sessionStorage.getItem('score') || 0;
+	    document.addEventListener("DOMContentLoaded", function () {
+	        const score = new URLSearchParams(window.location.search).get('score'); // Lấy điểm số từ URL
+	        const playerId = localStorage.getItem("playerId"); // Lấy playerId từ localStorage
 
-	    // Hiển thị điểm số
-	    document.getElementById('score-value').innerText = `${score}`;
+	        // Kiểm tra xem playerId có tồn tại không
+	        if (!playerId) {
+	            console.error("playerId không được định nghĩa.");
+	            alert("Bạn cần đăng nhập để lưu thông tin phiên chơi."); // Thông báo cho người dùng
+	            window.location.href = 'login.html'; // Chuyển hướng về trang đăng nhập
+	            return; // Dừng thực hiện nếu playerId không tồn tại
+	        }
+			
+//nhấn để đăng xuất 
+document.getElementById("logout").addEventListener("click", function() {
+    fetch('/api/logout', { method: 'POST' }) // Sử dụng POST cho đăng xuất
+        .then(response => {
+            console.log('Response status:', response.status); // In ra mã trạng thái
+            return response.json(); // Lấy nội dung phản hồi dưới dạng JSON
+        })
+        .then(data => {
+            console.log('Response body:', data); // In ra nội dung phản hồi
+            if (data.success) {
+                alert('Đăng xuất thành công!'); // Thông báo cho người dùng
+                // Kiểm tra session sau khi đăng xuất bằng cách tiếp tục gọi API kiểm tra
+                return fetch('/api/check-session');
+            } else {
+                console.error('Error logging out');
+                alert('Đăng xuất không thành công. Vui lòng thử lại.'); // Thông báo cho người dùng
+            }
+        })
+        .then(sessionCheckResponse => {
+            return sessionCheckResponse.json();
+        })
+        .then(sessionCheckData => {
+            if (!sessionCheckData.loggedIn) {
+                console.log("User  is successfully logged out.");
+                window.location.href = "login.html"; // Chuyển hướng về trang đăng nhập
+            } else {
+                console.error("User  is still logged in.");
+            }
+        })
+        .catch(error => {
+            console.error('Error during logout:', error);
+            alert('Có lỗi xảy ra trong quá trình đăng xuất.'); // Thông báo cho người dùng
+        });
+});
 
-	    // Lưu điểm số vào sessionStorage khi trang load
-	    localStorage.setItem('score', score);
-		
-		// Lấy thông tin người dùng từ session
-		fetch('/api/user-info')
-		    .then(response => response.json())
-		    .then(data => {
-		        if (data.name) {
-		            // Hiển thị tên người dùng đã đăng nhập
-		            document.getElementById('player-name-text').innerText = data.name;
-		        } else {
-		            // Hiển thị "Khách" nếu không có thông tin
-		            document.getElementById('player-name-text').innerText = 'Khách';
-		        }
-		    })
-		    .catch(error => {
-		        console.error('Error fetching user info:', error);
-		        document.getElementById('player-name-text').innerText = 'Unknown';
-		    });
+	        // Kiểm tra và chuyển đổi score thành số nguyên
+	        const parsedScore = parseInt(score, 10);
+	        if (isNaN(parsedScore)) {
+	            console.error("Điểm số không hợp lệ:", score);
+	            alert("Điểm số không hợp lệ."); // Thông báo cho người dùng
+	            return; // Dừng thực hiện nếu score không hợp lệ
+	        }
 
-		// Lấy thông tin người dùng từ session
-		fetch('/api/user-info')
-		    .then(response => response.json())
-		    .then(data => {
-		        if (data.name) {
-		            // Hiển thị tên người dùng đã đăng nhập
-		            document.getElementById('user_info').innerText = data.name;
-		        } else {
-		            // Hiển thị "Khách" nếu không có thông tin
-		            document.getElementById('user_info').innerText = 'Khách';
-		        }
-		    })
-		    .catch(error => {
-		        console.error('Error fetching user info:', error);
-		        document.getElementById('user_info').innerText = 'Unknown';
-		    });
-		
-		//nhấn để đăng xuất 
-		document.getElementById("logout").addEventListener("click", function() {
-		    fetch('/api/logout', { method: 'POST' }) // Sử dụng POST cho đăng xuất
-		        .then(response => {
-		            console.log('Response status:', response.status); // In ra mã trạng thái
-		            return response.json(); // Lấy nội dung phản hồi dưới dạng JSON
-		        })
-		        .then(data => {
-		            console.log('Response body:', data); // In ra nội dung phản hồi
-		            if (data.success) {
-		                alert('Đăng xuất thành công!'); // Thông báo cho người dùng
-		                // Kiểm tra session sau khi đăng xuất bằng cách tiếp tục gọi API kiểm tra
-		                return fetch('/api/check-session');
-		            } else {
-		                console.error('Error logging out');
-		                alert('Đăng xuất không thành công. Vui lòng thử lại.'); // Thông báo cho người dùng
-		            }
-		        })
-		        .then(sessionCheckResponse => {
-		            return sessionCheckResponse.json();
-		        })
-		        .then(sessionCheckData => {
-		            if (!sessionCheckData.loggedIn) {
-		                console.log("User  is successfully logged out.");
-		                window.location.href = "login.html"; // Chuyển hướng về trang đăng nhập
-		            } else {
-		                console.error("User  is still logged in.");
-		            }
-		        })
-		        .catch(error => {
-		            console.error('Error during logout:', error);
-		            alert('Có lỗi xảy ra trong quá trình đăng xuất.'); // Thông báo cho người dùng
-		        });
-		});
-		
-	    //nhấn để tiếp tục sau khi đã gameover 
-	    document.getElementById("continue").addEventListener("click", function() {
-	        // Lấy lại điểm số và vị trí chim từ sessionStorage
-	        const previousScore = sessionStorage.getItem('score') || 0;
-	        const birdPosition = sessionStorage.getItem('birdPosition') || 150; // Đặt giá trị mặc định cho birdPosition
+	        // Kiểm tra và chuyển đổi playerId thành số nguyên
+	        const parsedPlayerId = parseInt(playerId, 10);
+	        if (isNaN(parsedPlayerId)) {
+	            console.error("playerId không hợp lệ:", playerId);
+	            alert("playerId không hợp lệ."); // Thông báo cho người dùng
+	            return; // Dừng thực hiện nếu playerId không hợp lệ
+	        }
 
-	        // Quay lại trò chơi với trạng thái trước đó (điểm số và vị trí chim)
-	        window.location.href = 'game.html';
-	    });
-	    
-	    function gameOver(score, birdY) {
-	        sessionStorage.setItem('score', score);
-	        sessionStorage.setItem('birdPosition', birdY);
+	        // Hiển thị điểm số
+	        document.getElementById("score-value").innerText = parsedScore;
 
-	        const playerId = localStorage.getItem("playerId"); // Giả sử bạn đã lưu playerId vào localStorage
-	        const totalScore = parseInt(sessionStorage.getItem('totalScore')) || 0; // Lấy total_score từ sessionStorage hoặc mặc định là 0
-	        const playDate = new Date().toISOString(); // Lấy thời gian hiện tại
-
-	        fetch('/api/sessions/end', { // Cập nhật URL endpoint
+	        // Gọi API để lưu thông tin phiên chơi
+	        fetch('/api/gameover', {
 	            method: 'POST',
 	            headers: {
-	                'Content-Type': 'application/json',
+	                'Content-Type': 'application/json'
 	            },
 	            body: JSON.stringify({
-	                sessionId: sessionStorage.getItem('sessionId'), // Giả sử bạn đã lưu sessionId vào sessionStorage
-	                score: score
-	            }),
+	                playerId: parsedPlayerId, // ID của người chơi
+	                score: parsedScore         // Điểm số
+	            })
 	        })
 	        .then(response => {
-	            if (!response.ok) {
-	                throw new Error('Network response was not ok');
+	            if (response.ok) {
+	                console.log('Thông tin phiên chơi đã được lưu thành công!');
+	                alert('Thông tin phiên chơi đã được lưu thành công!'); // Thông báo cho người dùng
+	            } else {
+	                console.error('Có lỗi xảy ra khi lưu thông tin phiên chơi.');
+	                alert('Có lỗi xảy ra khi lưu thông tin phiên chơi.'); // Thông báo cho người dùng
 	            }
-	            return response.json();
 	        })
-	        .then(data => {
-	            console.log('Success:', data);
-	            window.location.href = `gameover.html?score=${score}`;
-	        })
-	        .catch((error) => {
+	        .catch(error => {
 	            console.error('Error:', error);
-	            alert('Có lỗi xảy ra khi lưu phiên chơi. Vui lòng thử lại.'); // Thông báo cho người dùng
+	            alert('Có lỗi xảy ra trong quá trình kết nối đến server.'); // Thông báo cho người dùng
 	        });
-	    }
+	    });
+
+	    document.getElementById("continue").addEventListener("click", function() {
+	        window.location.href = 'main.html'; // Quay lại trò chơi
+	    });
 	</script>
 </body>
 </html>

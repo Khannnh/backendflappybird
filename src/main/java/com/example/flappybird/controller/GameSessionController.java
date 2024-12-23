@@ -1,5 +1,6 @@
 package com.example.flappybird.controller;
 
+import com.example.flappybird.model.GameOverRequest;
 import com.example.flappybird.model.GameSession;
 import com.example.flappybird.model.Player;
 import com.example.flappybird.service.GameSessionService;
@@ -9,10 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/sessions")
+@RequestMapping("/api")
 public class GameSessionController {
     @Autowired
     private GameSessionService gameSessionService;
@@ -20,55 +20,24 @@ public class GameSessionController {
     @Autowired
     private PlayerService playerService;
 
-    // Bắt đầu một phiên chơi mới
-    @PostMapping("/start")
-    public GameSession startNewSession(@RequestParam String username) {
-        Player player = playerService.findByUsername(username);
+    // API để lưu thông tin phiên chơi
+    @PostMapping("/gameover") // Đường dẫn mới cho gameover
+    public ResponseEntity<String> saveGameOverInfo(@RequestBody GameOverRequest request) {
+        // Tìm người chơi theo ID
+        Player player = playerService.findById(request.getPlayerId());
         if (player == null) {
-            throw new IllegalArgumentException("Người chơi không tồn tại");
+            return ResponseEntity.badRequest().body("Người chơi không tồn tại");
         }
-        return gameSessionService.startNewSession(player);
-    }
 
-    // Kết thúc một phiên chơi
-    @PostMapping("/end")
-    public GameSession endSession(@RequestParam int sessionId, @RequestParam int score) {
-        GameSession session = gameSessionService.getSessionById(sessionId);
-        if (session == null) {
-            throw new IllegalArgumentException("Phiên chơi không tồn tại");
-        }
-        
-        // Cập nhật điểm số và thời gian chơi
-        return gameSessionService.endSession(sessionId, score);
-    }
+        // Tạo một phiên chơi mới
+        GameSession session = new GameSession();
+        session.setPlayer(player);
+        session.setScore(request.getScore());
+        session.setPlayDate(LocalDateTime.now()); // Lưu thời gian hiện tại
 
-    // Lấy danh sách các phiên chơi của người chơi
-    @GetMapping("/player/{username}")
-    public List<GameSession> getSessionsByPlayer(@PathVariable String username) {
-        Player player = playerService.findByUsername(username);
-        if (player == null) {
-            throw new IllegalArgumentException("Người chơi không tồn tại");
-        }
-        return gameSessionService.getSessionsByPlayer(player);
-    }
+        // Lưu phiên chơi vào cơ sở dữ liệu
+        gameSessionService.saveGameSession(session);
 
-    // Lấy phiên chơi theo ID
-    @GetMapping("/{sessionId}")
-    public GameSession getSessionById(@PathVariable int sessionId) {
-        GameSession session = gameSessionService.getSessionById(sessionId);
-        if (session == null) {
-            throw new IllegalArgumentException("Phiên chơi không tồn tại");
-        }
-        return session;
-    }
-
-    // Lấy tổng điểm của người chơi
-    @GetMapping("/total-score")
-    public int getTotalScore(@RequestParam String username) {
-        Player player = playerService.findByUsername(username);
-        if (player == null) {
-            throw new IllegalArgumentException("Người chơi không tồn tại");
-        }
-        return gameSessionService.getTotalScoreByPlayer(player);
+        return ResponseEntity.ok("Thông tin phiên chơi đã được lưu thành công");
     }
 }

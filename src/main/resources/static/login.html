@@ -92,8 +92,6 @@
         </form>
         <p>Don't have an account? <a href="createaccount.html" id="register-link">Create account</a></p>
     </div>
-
-    <!-- JavaScript -->
     <script>
         document.getElementById("login-form").addEventListener("submit", (event) => {
             event.preventDefault(); // Ngăn form reload trang
@@ -137,6 +135,7 @@
 			    console.log("API Response:", data);  // Ghi phản hồi API ra console
 			    if (data.success === true) {
 					// Lưu thông tin vào localStorage
+					localStorage.setItem("playerId", data.playerId);
 					localStorage.setItem('username', data.username); // Lưu tên người dùng
 					localStorage.setItem('name', data.name); // Nếu bạn có trường name trong phản hồi
 			        alert('Login successful!');
@@ -149,7 +148,6 @@
 			    console.error('Error:', error);  // Ghi lỗi ra console
 			    alert('Unable to connect to the server. Please try again later.');
 			});
-
         }
     </script>
 

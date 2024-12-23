@@ -17,7 +17,6 @@ const birdStartPosition = parseInt(sessionStorage.getItem('birdPosition')) || 15
 
 // Đặt lại chim và điểm số khi tiếp tục chơi
 bird.style.top = birdStartPosition + "px";
-
 document.getElementById("score-value").innerText = sessionScore;
 
 // Cập nhật birdY
@@ -178,12 +177,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const playerName = localStorage.getItem("username") || "Unknown Player";
     document.getElementById("player").innerText = playerName;
 });
-
+//lưu điểm sau khi chơi thua
 function gameOver(score, birdY) {
-    sessionStorage.setItem('score', score);
-    sessionStorage.setItem('birdPosition', birdY);
-
-    window.location.href = `gameover.html?score=${score}`;
+    // Lưu điểm và vị trí chim vào localStorage
+    localStorage.setItem('score', score);
+    localStorage.setItem('birdPosition', birdY);
+	window.location.href = `gameover.html?score=${score}`;
+	// Khi bắt đầu trò chơi, lưu playerId vào localStorage
+	localStorage.setItem("playerId", playerId); // playerId là ID của người chơi
 }
-
-startGame(); // Bắt đầu trò chơi ngay khi trang tải
+startGame(); 

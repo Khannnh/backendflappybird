@@ -3,6 +3,9 @@ package com.example.flappybird.service;
 
 import com.example.flappybird.model.Player;
 import com.example.flappybird.repository.PlayerRepository;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +15,11 @@ public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
 
-    // Không sử dụng PasswordEncoder nữa
-    // @Autowired
-    // private PasswordEncoder passwordEncoder;
-
+    // Phương thức để lưu người chơi
+    public void savePlayer(Player player) {
+        playerRepository.save(player); // Lưu người chơi vào cơ sở dữ liệu
+    }
+    
     public Player registerPlayer(String name, String username, String password) {
         // Kiểm tra xem username đã tồn tại chưa
         if (playerRepository.findByUsername(username) != null) {
@@ -51,4 +55,11 @@ public class PlayerService {
         }
         return false; // Tên người dùng không tồn tại
     }
+
+	public Player findById(int playerId) {
+        // Sử dụng Optional để tránh NullPointerException
+        Optional<Player> playerOptional = playerRepository.findById(playerId);
+        return playerOptional.orElse(null); // Trả về null nếu không tìm thấy người chơi
+		
+	}
 }
