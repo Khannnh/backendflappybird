@@ -136,6 +136,9 @@
 			.then(data => {
 			    console.log("API Response:", data);  // Ghi phản hồi API ra console
 			    if (data.success === true) {
+					// Lưu thông tin vào localStorage
+					localStorage.setItem('username', data.username); // Lưu tên người dùng
+					localStorage.setItem('name', data.name); // Nếu bạn có trường name trong phản hồi
 			        alert('Login successful!');
 			        window.location.href = '/home.html';  // Chuyển hướng nếu đăng nhập thành công
 			    } else {

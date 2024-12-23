@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+//đánh dấu configuration như 1 lớp cấu hình chính của dự án
 @Configuration
 public class SecurityConfig implements WebMvcConfigurer {
 

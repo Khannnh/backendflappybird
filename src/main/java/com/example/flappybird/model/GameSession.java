@@ -1,32 +1,39 @@
 package com.example.flappybird.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "gamesession")
 public class GameSession {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    //mqh giữa 2 thực thể 
     @ManyToOne
     @JoinColumn(name = "player_id", nullable = false)
     private Player player;
 
-    private int score;
-
+    @Column(name = "play_date", nullable = false)
     private LocalDateTime playDate;
 
-    private int totalPoint; // Thêm trường totalPoint
+    @Column(nullable = false)
+    private int score;
 
-    // Getters and setters
+    // Constructors
+    public GameSession() {
+        this.playDate = LocalDateTime.now(); // Set default play date to now
+    }
 
+    public GameSession(Player player, int score) {
+        this.player = player;
+        this.score = score;
+        this.playDate = LocalDateTime.now(); // Set default play date to now
+    }
+
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -43,14 +50,6 @@ public class GameSession {
         this.player = player;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
     public LocalDateTime getPlayDate() {
         return playDate;
     }
@@ -59,11 +58,12 @@ public class GameSession {
         this.playDate = playDate;
     }
 
-    public int getTotalPoint() { // Getter cho totalPoint
-        return totalPoint;
+    public int getScore() {
+        return score;
     }
 
-    public void setTotalPoint(int totalPoint) { // Setter cho totalPoint
-        this.totalPoint = totalPoint;
+    public void setScore(int score) {
+        this.score = score;
     }
+
 }

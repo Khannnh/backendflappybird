@@ -234,7 +234,8 @@
 	    sessionStorage.setItem('score', score);
 
 	    // Lấy tên người chơi từ sessionStorage
-	    const playerName = sessionStorage.getItem('player') || "Unknown Player"; // Nếu không có tên, hiển thị "Unknown Player"
+	    const playerName = sessionStorage.getItem('player') || "Unknown Player"; 
+		// Nếu không có tên, hiển thị "Unknown Player"
 
 	    // Hiển thị tên người chơi
 	    document.getElementById('player-name-text').innerText = playerName;

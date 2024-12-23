@@ -8,4 +8,5 @@ public interface PlayerRepository extends JpaRepository<Player, Integer> {
 }
 
 //một interface sử dụng Spring Data JPA để tương tác với cơ sở dữ liệu.
-//
+//tương tác trực tiếp với csdl 
+//thực hiện curd với csdl 

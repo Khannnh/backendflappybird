@@ -7,8 +7,8 @@ let isPaused = false;
 
 let birdX = 50;
 let birdY = 150;
-let birdVelocityY = 0;
-const gravity = 0.6;
+let birdVelocityY = 0;   //vận tốc 
+const gravity = 0.6;   //ban đầu để trọng lực bằng 0 , chim chưa rơi
 const lift = -5; // Tốc độ chim bay lên
 
 // Lấy điểm số và vị trí chim từ sessionStorage
@@ -36,13 +36,17 @@ function updateBird() {
 }
 
 function createPipe() {
-    const pipeGap = Math.floor(Math.random() * 50) + 120;
-    const pipeHeight = Math.floor(Math.random() * 200) + 100;
+    const pipeGap = Math.floor(Math.random() * 50) + 120;   
+	//làm tròn lên 1 số trong khoảng 0-49.999 rồi + 120
+	
+    const pipeHeight = Math.floor(Math.random() * 200) + 100; 
+	
+	//khai báo biến chiều cao là làm tròn lên , random trong khoảng 200 rồi + 100 
 
     const toppipe = document.createElement("img");
-    toppipe.src = "toppipe.png";
-    toppipe.className = "pipe toppipe";
-    toppipe.style.height = pipeHeight + "px";
+    toppipe.src = "toppipe.png";  //thiết lập thuộc tính src
+    toppipe.className = "pipe toppipe"; //thiết lập className
+    toppipe.style.height = pipeHeight + "px"; 
     toppipe.style.left = "400px";
     toppipe.style.position = "absolute";
     pipeContainer.appendChild(toppipe);
@@ -61,13 +65,15 @@ function createPipe() {
 
 function updatePipes() {
     if (isPaused || isGameOver) return;
-
-    pipes.forEach(pipe => {
+//kiểm tra điều kiện khi dừng game hoặc kt trò chơi
+    pipes.forEach(pipe => {  //chạy qua từng ống trong mảng pipe 
         const topPipe = pipe.top;
         const bottomPipe = pipe.bottom;
 
         let pipeX = parseInt(topPipe.style.left.replace("px", ""));
-        pipeX -= 2;
+		//lấy gtri nguyen của left bỏ đuôi px 
+        pipeX -= 2;  
+		//pipeX có là chiều rộng của ống 
         topPipe.style.left = pipeX + "px";
         bottomPipe.style.left = pipeX + "px";
 
@@ -80,7 +86,7 @@ function updatePipes() {
             document.getElementById("score-value").innerText = score;
         }
 
-        if (
+        if ( //kt va chạm 
             (birdY < topPipe.offsetHeight && pipeX < birdX + bird.width && pipeX + 50 > birdX) ||
             (birdY + bird.height > bottomPipe.offsetTop && pipeX < birdX + bird.width && pipeX + 50 > birdX)
         ) {

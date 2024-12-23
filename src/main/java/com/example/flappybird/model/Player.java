@@ -17,14 +17,16 @@ public class Player {
     private String username;
 
     @Column(nullable = false, unique = true, length = 20)
-    private String pw;
+    private String password ;
 
     @Column(nullable = false, length = 255)
-    private String ten;
+    private String name;
 
     @Column(nullable = false, columnDefinition = "int default 0")
-    private int totalPoint;
+    private int total_point;
 
+    @Column(nullable = false, columnDefinition = "int default 4")
+    private int lives;
     // Getters and setters
 
     public int getId() {
@@ -43,27 +45,38 @@ public class Player {
         this.username = username;
     }
 
-    public String getPw() {
-        return pw;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPw(String pw) {
-        this.pw = pw;
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+    public String getName() {
+        return name;
     }
 
-    public String getTen() {
-        return ten;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setTen(String ten) {
-        this.ten = ten;
-    }
+	public int getTotal_point() {
+		return total_point;
+	}
 
-    public int getTotalPoint() {
-        return totalPoint;
-    }
+	public void setTotal_point(int total_point) {
+		this.total_point = total_point;
+	}
 
-    public void setTotalPoint(int totalPoint) {
-        this.totalPoint = totalPoint;
-    }
+	public int getLives() {
+		return lives;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+
+
+
 }
