@@ -4,9 +4,11 @@ package com.example.flappybird.service;
 import com.example.flappybird.model.Player;
 import com.example.flappybird.repository.PlayerRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 //xử lý logic , tiện cho kiểm thử 
@@ -59,6 +61,9 @@ public class PlayerService {
     public Player findById(int player_id) {
         return playerRepository.findById(player_id)
                 .orElseThrow(() -> new IllegalArgumentException("Player ID không tồn tại: " + player_id));
+    }
+    public List<Player> getLeaderboard() {
+        return playerRepository.findAll(Sort.by(Sort.Order.desc("total_point"), Sort.Order.asc("id")));
     }
 
 }
