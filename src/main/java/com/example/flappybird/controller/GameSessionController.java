@@ -7,6 +7,7 @@ import com.example.flappybird.service.GameSessionService;
 import com.example.flappybird.service.PlayerService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,4 +49,10 @@ public class GameSessionController {
 
         return ResponseEntity.ok("Thông tin phiên chơi đã được lưu thành công");
     }
+    @GetMapping("/history") // Phương thức GET để lấy lịch sử phiên chơi
+    public ResponseEntity<List<GameSession>> getLast20GameSessions() {
+        List<GameSession> sessions = gameSessionService.getLast20Sessions();
+        return ResponseEntity.ok(sessions);
+    }
+
 }

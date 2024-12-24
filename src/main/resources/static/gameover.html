@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://code.iconify.design/3/3.0.0/iconify.min.js"></script> <!--link này để chèn bxh 1,2,3-->
 	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+	<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <title>Game Over</title>
     <style>
         body {
@@ -80,7 +81,7 @@
             margin-top: 80px;
             display: flex; /*sắp xếp 2 ptu trên cùng 1 hàng*/
             justify-content: center; /*căn giữa 2 phần tử*/
-            gap: 85px;
+            gap: 45px;
         }
         #menu {
             color: white;
@@ -127,7 +128,7 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
-        #continue, #leaderboard {
+        #continue, #leaderboard ,#history {
             border: solid black 2px;
             font-size: 50px;
             border-radius: 10%;
@@ -220,8 +221,10 @@
         <button id="leaderboard">
             <span class="iconify" data-icon="mdi:podium-gold" style="font-size:35px; color:#ff6600;"></span>
         </button>
+		<button id="history">
+		    <i class='fas fa-history' style='font-size:35px;color:red'></i>
+		</button>
     </div>
-	
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
 		    const score = new URLSearchParams(window.location.search).get('score'); // Lấy điểm số từ URL
@@ -354,9 +357,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // Lưu thông tin phiên chơi
     saveGameOverInfo(validationResult.parsedScore, validationResult.parsedPlayerId);
 });
-	    document.getElementById("continue").addEventListener("click", function() {
-	        window.location.href = 'main.html'; // Quay lại trò chơi
-	    });
+    document.getElementById("continue").addEventListener("click", function() {
+        window.location.href = 'main.html'; // Quay lại trò chơi
+    });
+	document.getElementById("history").addEventListener("click", function() {
+	    window.location.href = 'history.html'; // Xem trạng thái các phiên chơi
+	});
+		
 	</script>
 </body>
 </html>
