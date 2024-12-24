@@ -11,24 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController // Trả về dữ liệu JSON hoặc XML
-@RequestMapping("/api/players")
+@RequestMapping("/api")
 public class PlayerController {
 
     @Autowired
     private PlayerService playerService;
-
-    // API đăng ký người chơi
-    @PostMapping("/register")
-    public ResponseEntity<String> registerPlayer(@RequestBody Player player) {
-        try {
-            // Gọi service để đăng ký người chơi
-            playerService.registerPlayer(player.getName(), player.getUsername(), player.getPassword());
-            return ResponseEntity.ok("Tạo tài khoản thành công!");
-        } catch (IllegalArgumentException e) {
-            // Nếu gặp lỗi, trả về thông báo lỗi
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
     // API để lấy thông tin người chơi theo username
     @GetMapping("/{username}")
@@ -40,9 +27,6 @@ public class PlayerController {
             return ResponseEntity.notFound().build(); // Nếu không tìm thấy người chơi
         }
     }
-
-
-
 
     //API của trang bảng xếp hạng lấy 20 ng điểm cao nhất
     @GetMapping("/leaderboard")
