@@ -2,6 +2,7 @@
 package com.example.flappybird.service;
 
 import com.example.flappybird.model.Player;
+import com.example.flappybird.repository.GameSessionRepository;
 import com.example.flappybird.repository.PlayerRepository;
 
 import java.util.List;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
+    private GameSessionRepository gameSessionRepository;
+
 
     // Phương thức để lưu người chơi
     public void savePlayer(Player player) {

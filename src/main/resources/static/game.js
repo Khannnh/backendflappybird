@@ -9,7 +9,7 @@ let birdX = 50;
 let birdY = 150;
 let birdVelocityY = 0;   //vận tốc 
 const gravity = 0.6;   //ban đầu để trọng lực bằng 0 , chim chưa rơi
-const lift = -5; // Tốc độ chim bay lên
+const lift = -6; // Tốc độ chim bay lên
 
 // Lấy điểm số và vị trí chim từ sessionStorage
 const sessionScore = parseInt(sessionStorage.getItem('score')) || 0;
