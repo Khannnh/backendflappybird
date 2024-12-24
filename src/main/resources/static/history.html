@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             text-align: center;
-            background-image:url('/kiểm tra/gameover.jpg');
+            background-image:url('gameover.jpg');
             background-position: center;
             background-repeat: no-repeat;
             height: 100vh;
@@ -51,6 +51,31 @@
         </table>
 </body>
 <script>
-	
+	document.addEventListener('DOMContentLoaded', () => {
+	    const historyBody = document.getElementById('history-body');
+
+	    // Gọi API từ backend
+	    fetch('/api/history') // Thay đường dẫn nếu API của bạn khác
+	        .then(response => {
+	            if (!response.ok) {
+	                throw new Error('Lỗi khi gọi API: ' + response.status);
+	            }
+	            return response.json();
+	        })
+	        .then(data => {
+	            // Duyệt qua từng phiên chơi và hiển thị trong bảng
+	            data.forEach(session => {
+	                const row = document.createElement('tr');
+	                row.innerHTML = `
+	                    <td>${session.id}</td>
+	                    <td>${new Date(session.play_date).toLocaleString()}</td>
+	                    <td>${session.name}</td>
+	                    <td>${session.score}</td>
+	                `;
+	                historyBody.appendChild(row);
+	            });
+	        })
+	        .catch(error => console.error('Lỗi khi lấy dữ liệu từ API:', error));
+	});
 </script>
 </html>
