@@ -21,4 +21,9 @@ public class GameSessionService {
     public List<GameSession> getLast20Sessions() {
         return gameSessionRepository.findLast20Sessions(PageRequest.of(0, 20));
     }
+    //phương thức để tìm người chơi theo id
+    public List<GameSession> findByPlayerId(int playerId) {
+        return gameSessionRepository.findByPlayerId(playerId);
+    }
+
 }

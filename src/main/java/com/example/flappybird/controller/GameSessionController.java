@@ -24,7 +24,7 @@ public class GameSessionController {
     private PlayerService playerService;
 
     // API để lưu thông tin phiên chơi
-    @PostMapping("/gameover") // Đường dẫn mới cho gameover
+    @PostMapping("/gameover")
     public ResponseEntity<String> saveGameOverInfo(@RequestBody GameOverRequest request) {
         // Tìm người chơi theo ID
         Player player = playerService.findById(request.getPlayer_id());
@@ -36,18 +36,29 @@ public class GameSessionController {
         GameSession session = new GameSession();
         session.setPlayer(player);
         session.setScore(request.getScore());
+        session.setPlayDate(request.getPlay_date() != null ? request.getPlay_date() : LocalDateTime.now());
 
-        // Kiểm tra và lưu playDate (nếu có) từ request, nếu không thì sử dụng thời gian hiện tại
-        if (request.getPlay_date() != null) {
-            session.setPlayDate(request.getPlay_date()); // Lấy thời gian từ request
-        } else {
-            session.setPlayDate(LocalDateTime.now()); // Nếu không có playDate, sử dụng thời gian hiện tại
-        }
-
-        // Lưu phiên chơi vào cơ sở dữ liệu
+        // Lưu phiên chơi vào cơ sở dữ liệu trước
         gameSessionService.saveGameSession(session);
 
-        return ResponseEntity.ok("Thông tin phiên chơi đã được lưu thành công");
+        // Lấy lại danh sách các phiên chơi (bao gồm phiên chơi mới vừa lưu)
+        List<GameSession> sessions = gameSessionService.findByPlayerId(player.getId());
+
+        // Tính tổng điểm của tất cả các phiên chơi
+        int total_point = sessions.stream()
+                                  .mapToInt(GameSession::getScore)
+                                  .sum();
+
+        // Log thông tin để kiểm tra
+        System.out.println("Player ID: " + player.getId());
+        System.out.println("Sessions retrieved: " + sessions);
+        System.out.println("Total points calculated: " + total_point);
+
+        // Cập nhật total_point của người chơi
+        player.setTotal_point(total_point);
+        playerService.savePlayer(player);
+
+        return ResponseEntity.ok("Thông tin phiên chơi đã được lưu thành công. Tổng điểm: " + total_point);
     }
     @GetMapping("/history") // Phương thức GET để lấy lịch sử phiên chơi
     public ResponseEntity<List<GameSession>> getLast20GameSessions() {
