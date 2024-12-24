@@ -242,15 +242,15 @@
 	    .then(data => {
 	        if (data.name) {
 	            // Hiển thị tên người dùng đã đăng nhập
-	            document.getElementById('user_info').innerText = data.name;
+	            document.getElementById('player-name-text').innerText = data.name;
 	        } else {
 	            // Hiển thị "Khách" nếu không có thông tin
-	            document.getElementById('user_info').innerText = 'Khách';
+	            document.getElementById('player-name-text').innerText = 'Khách';
 	        }
 	    })
 	    .catch(error => {
 	        console.error('Error fetching user info:', error);
-	        document.getElementById('user_info').innerText = 'Unknown';
+	        document.getElementById('player-name-text').innerText = 'Unknown';
 	    });
 			
 		// Nhấn để đăng xuất 
