@@ -3,6 +3,9 @@ package com.example.flappybird.controller;
 import com.example.flappybird.model.Player;
 import com.example.flappybird.service.PlayerService;
 import jakarta.servlet.http.HttpSession;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,23 +41,13 @@ public class PlayerController {
         }
     }
 
-    // API đăng nhập người chơi
-    @PostMapping("/login")
-    public ResponseEntity<String> loginPlayer(@RequestBody Player player, HttpSession session) {
-        boolean isValidLogin = playerService.validateLogin(player.getUsername(), player.getPassword());
-        if (isValidLogin) {
-            // Lưu thông tin người chơi vào session nếu đăng nhập thành công
-            session.setAttribute("username", player.getUsername());
-            return ResponseEntity.ok("Đăng nhập thành công!");
-        } else {
-            return ResponseEntity.badRequest().body("Tên đăng nhập hoặc mật khẩu không đúng!");
-        }
-    }
 
-    // API để đăng xuất người chơi (xóa session)
-    @PostMapping("/logout")
-    public ResponseEntity<String> logoutPlayer(HttpSession session) {
-        session.invalidate(); // Hủy bỏ session
-        return ResponseEntity.ok("Đã đăng xuất!");
+
+
+    //API của trang bảng xếp hạng lấy 20 ng điểm cao nhất
+    @GetMapping("/leaderboard")
+    public ResponseEntity<List<Player>> getTop20Players() {
+        List<Player> topPlayers = playerService.getTop20Players();
+        return ResponseEntity.ok(topPlayers);
     }
 }

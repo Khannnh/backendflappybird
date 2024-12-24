@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -62,8 +64,14 @@ public class PlayerService {
         return playerRepository.findById(player_id)
                 .orElseThrow(() -> new IllegalArgumentException("Player ID không tồn tại: " + player_id));
     }
-    public List<Player> getLeaderboard() {
-        return playerRepository.findAll(Sort.by(Sort.Order.desc("total_point"), Sort.Order.asc("id")));
-    }
+    public List<Player> getTop20Players() {
+        // Sắp xếp theo tổng điểm giảm dần và id tăng dần
+        List<Player> players = playerRepository.findAll(Sort.by(Sort.Order.desc("total_point"), Sort.Order.asc("id")));
 
+        // Giới hạn chỉ lấy 20 người chơi đầu tiên
+        if (players.size() > 20) {
+            return players.subList(0, 20);  // Lấy 20 người chơi đầu tiên
+        }
+        return players;  // Nếu có ít hơn 20 người, trả về toàn bộ danh sách
+    }
 }
