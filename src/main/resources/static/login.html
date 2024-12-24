@@ -135,10 +135,24 @@
 	        .then(data => {
 	            console.log("Phản hồi API:", data); // Log phản hồi để kiểm tra
 	            if (data.success) {
-	                // Lưu thông tin vào localStorage
-	                localStorage.setItem("playerId", data.player_id || "");
-	                localStorage.setItem("username", data.username || "");
-	                localStorage.setItem("name", data.name || "");
+					// Kiểm tra và lưu thông tin vào localStorage
+					if (data.player_id) {
+					    localStorage.setItem("player_id", data.player_id);
+					} else {
+					    console.warn("player_id không tồn tại trong phản hồi API.");
+					}
+
+					if (data.username) {
+					    localStorage.setItem("username", data.username);
+					} else {
+					    console.warn("username không tồn tại trong phản hồi API.");
+					}
+
+					if (data.name) {
+					    localStorage.setItem("name", data.name);
+					} else {
+					    console.warn("name không tồn tại trong phản hồi API.");
+					}
 
 	                alert('Đăng nhập thành công!');
 	                console.log('ID của người chơi: ' + data.player_id);
