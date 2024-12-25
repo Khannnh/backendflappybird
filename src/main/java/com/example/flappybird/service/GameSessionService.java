@@ -25,5 +25,4 @@ public class GameSessionService {
     public List<GameSession> findByPlayerId(int playerId) {
         return gameSessionRepository.findByPlayerId(playerId);
     }
-
 }

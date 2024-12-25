@@ -35,4 +35,10 @@ public class PlayerController {
         List<Player> topPlayers = playerService.getTop20Players();
         return ResponseEntity.ok(topPlayers);
     }
+    
+    @GetMapping("/total-score/{playerId}")
+    public ResponseEntity<Integer> getTotalScore(@PathVariable int playerId) {
+        Integer totalPoints = playerService.getTotalPointsByPlayerId(playerId);
+        return ResponseEntity.ok(totalPoints);
+    }
 }

@@ -1,6 +1,7 @@
 
 package com.example.flappybird.service;
 
+import com.example.flappybird.model.GameSession;
 import com.example.flappybird.model.Player;
 import com.example.flappybird.repository.GameSessionRepository;
 import com.example.flappybird.repository.PlayerRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PlayerService {
     @Autowired
+    //khai báo biến thành viên của lớp hiện tại
     private PlayerRepository playerRepository;
     private GameSessionRepository gameSessionRepository;
 
@@ -77,4 +79,9 @@ public class PlayerService {
         }
         return players;  // Nếu có ít hơn 20 người, trả về toàn bộ danh sách
     }
+    public Integer getTotalPointsByPlayerId(int playerId) {
+        Integer totalPoints = playerRepository.findTotalPointsByPlayerId(playerId);
+        return totalPoints != null ? totalPoints : 0; // Trả về 0 nếu không có dữ liệu.
+    }
+    
 }

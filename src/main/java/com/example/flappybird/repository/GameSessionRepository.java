@@ -18,8 +18,9 @@ public interface GameSessionRepository extends JpaRepository<GameSession, Intege
     @Query("SELECT gs FROM GameSession gs WHERE gs.player.id = :playerId")
     
     List<GameSession> findByPlayerId(@Param("playerId") int playerId);
+    
+    @Query("SELECT SUM(gs.score) FROM GameSession gs WHERE gs.player.id = :playerId")
+    Integer findTotalScoreByPlayerId(@Param("playerId") int playerId);
 }
-
-
 /*kế thừa từ JpaRepository, cho phép bạn sử dụng các phương thức CRUD mà 
 không cần phải viết mã cho chúng.*/
